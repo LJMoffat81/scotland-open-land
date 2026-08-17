@@ -39,6 +39,7 @@ Thumbs.db
 # Next.js
 frontend/.next/
 frontend/out/
+*.tsbuildinfo
 
 # Logs
 *.log
