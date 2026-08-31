@@ -41,6 +41,7 @@ Only layers that can be legally published for free public use are drawn on the m
 - Map overlay and rolls query a public FeatureServer republish of that survey year
 - Illustrative AGR on vacant hectares uses council-flat full residual per m². It is not a bill
 - The 32-council AGR roll now carries `vacantHa` and `vacantFullAgrGbp`
+- Shareable map story: `/?story=vacant_land` paints the choropleth as that residual
 
 ## Official title
 
