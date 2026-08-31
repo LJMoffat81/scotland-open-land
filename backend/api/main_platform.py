@@ -7,12 +7,10 @@ platform catalogue, VDL overlay, gaps, downloads, and place context.
 
 from __future__ import annotations
 
-from fastapi.routing import APIRoute
-
 from api import main as core
 from api.main import app
 from api.platform_routes import router
-from layers.platform import place_context, platform_catalog
+from layers.platform import place_context
 
 app.include_router(router)
 
@@ -42,19 +40,3 @@ def _square_with_platform(*args, **kwargs):
 
 
 core._square_response = _square_with_platform
-
-app.router.routes = [
-    route
-    for route in app.router.routes
-    if not (
-        isinstance(route, APIRoute)
-        and route.path == "/layers/catalog"
-        and "GET" in (route.methods or set())
-    )
-]
-
-
-@app.get("/layers/catalog")
-def get_layer_catalog() -> dict:
-    """Open land platform layer list (brief + live/gap status)."""
-    return platform_catalog()

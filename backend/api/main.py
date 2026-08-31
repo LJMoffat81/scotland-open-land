@@ -29,8 +29,9 @@ from spatial.w3w import (
     words_to_coordinates,
 )
 from layers.councils_layer import build_councils_agr_geojson
-from layers.council_metrics import build_council_metrics_geojson, layer_catalog
+from layers.council_metrics import build_council_metrics_geojson
 from layers.grid_layer import build_w3w_agr_grid
+from layers.platform import platform_catalog
 from spatial.parcels import TRANSPARENT_PNG, fetch_parcel_tile_png, lookup_parcel_geojson
 from validation.glasgow_ward_18 import run_validation
 from validation.ratio_study import ratio_study_points
@@ -213,8 +214,8 @@ def get_glasgow_ward_18_boundary() -> JSONResponse:
 
 @app.get("/layers/catalog")
 def get_layer_catalog() -> dict:
-    """List choropleth metrics and overlays for the map UI."""
-    return layer_catalog()
+    """Open land platform layer list (brief + live/gap status)."""
+    return platform_catalog()
 
 
 @app.get("/fiscal/summary")
