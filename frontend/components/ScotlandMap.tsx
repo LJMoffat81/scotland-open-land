@@ -39,6 +39,7 @@ type SquareResponse = {
     admin_district: string | null;
     country: string | null;
   };
+  platform?: import("./AgrBreakdown").PlatformContext | null;
 };
 
 type FiscalSummary = {
@@ -248,6 +249,22 @@ const STORIES: Array<{ id: StoryId; label: string; metric: MetricId; blurb: stri
   },
 ];
 
+const PUBLIC_LAND_FILL: ExpressionSpecification = [
+  "match",
+  ["coalesce", ["get", "organisation"], ""],
+  "Forestry and Land Scotland",
+  "#66c2a5",
+  "NatureScot",
+  "#8da0cb",
+  "Scottish Crown Estate",
+  "#e78ac3",
+  "Scottish Water",
+  "#a6d854",
+  "Crofting Agricultural Holdings",
+  "#fc8d62",
+  "#2b6cb0",
+];
+
 const CELL_AGR_COLOR: ExpressionSpecification = [
   "interpolate",
   ["linear"],
@@ -289,6 +306,7 @@ export default function ScotlandMap() {
   const [showBoundaries, setShowBoundaries] = useState(true);
   const [showCellGrid, setShowCellGrid] = useState(false);
   const [showVdl, setShowVdl] = useState(false);
+  const [showPublicLand, setShowPublicLand] = useState(false);
   const [showMethod, setShowMethod] = useState(false);
   const [layerBusy, setLayerBusy] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -532,6 +550,30 @@ export default function ScotlandMap() {
         source: "w3w-agr-grid",
         layout: { visibility: "none" },
         paint: { "line-color": "#7f0000", "line-width": 0.4, "line-opacity": 0.4 },
+      });
+
+      map.addSource("public-land-overlay", {
+        type: "geojson",
+        data: emptyCollection,
+        attribution:
+          "Scottish Public and Crown Estate Land 2024. Five bodies only; not a title.",
+      });
+      map.addLayer({
+        id: "public-land-fill",
+        type: "fill",
+        source: "public-land-overlay",
+        layout: { visibility: "none" },
+        paint: {
+          "fill-color": PUBLIC_LAND_FILL,
+          "fill-opacity": 0.42,
+        },
+      });
+      map.addLayer({
+        id: "public-land-line",
+        type: "line",
+        source: "public-land-overlay",
+        layout: { visibility: "none" },
+        paint: { "line-color": "#1b4f72", "line-width": 0.9, "line-opacity": 0.75 },
       });
 
       map.addSource("vdl-overlay", {
@@ -847,6 +889,69 @@ export default function ScotlandMap() {
     };
   }, [mapReady, showVdl]);
 
+  // SG public / Crown Estate overlay (five national bodies)
+  useEffect(() => {
+    if (!mapReady) return;
+    const map = mapRef.current;
+    if (!map) return;
+
+    const setVis = (vis: "visible" | "none") => {
+      if (!map.getLayer("public-land-fill")) return;
+      map.setLayoutProperty("public-land-fill", "visibility", vis);
+      map.setLayoutProperty("public-land-line", "visibility", vis);
+    };
+
+    if (!showPublicLand) {
+      setVis("none");
+      return;
+    }
+
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout> | null = null;
+    let inFlight = false;
+
+    const loadPublicLand = () => {
+      if (cancelled || !mapRef.current || inFlight) return;
+      const b = map.getBounds();
+      if (!b) return;
+      if (map.getZoom() < 6) {
+        setVis("none");
+        return;
+      }
+      inFlight = true;
+      setLayerBusy(true);
+      const path =
+        `/layers/open/public-land?south=${b.getSouth()}&west=${b.getWest()}` +
+        `&north=${b.getNorth()}&east=${b.getEast()}&max_features=80`;
+      void apiJson<GeoJSON.FeatureCollection>(path)
+        .then((data) => {
+          if (cancelled) return;
+          (map.getSource("public-land-overlay") as GeoJSONSource)?.setData(data);
+          setVis("visible");
+        })
+        .catch(() => {
+          if (!cancelled) setVis("none");
+        })
+        .finally(() => {
+          inFlight = false;
+          if (!cancelled) setLayerBusy(false);
+        });
+    };
+
+    const onMove = () => {
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(loadPublicLand, 700);
+    };
+
+    loadPublicLand();
+    map.on("moveend", onMove);
+    return () => {
+      cancelled = true;
+      if (timer) clearTimeout(timer);
+      map.off("moveend", onMove);
+    };
+  }, [mapReady, showPublicLand]);
+
   useEffect(() => {
     if (!mapReady) return;
     const map = mapRef.current;
@@ -1089,6 +1194,14 @@ export default function ScotlandMap() {
                 </button>
                 <button
                   type="button"
+                  className={showPublicLand ? "chip active" : "chip"}
+                  onClick={() => setShowPublicLand((v) => !v)}
+                  title="Scottish Government public and Crown Estate land (zoom 6+)"
+                >
+                  Public land
+                </button>
+                <button
+                  type="button"
                   className={showMethod ? "chip active" : "chip"}
                   onClick={() => setShowMethod((v) => !v)}
                   title="Outline rural productive-method councils"
@@ -1099,6 +1212,12 @@ export default function ScotlandMap() {
               {showVdl && (
                 <p className="layer-meta">
                   SVDLS survey sites (OGL) — owner class is not a title. Zoom 8+.
+                </p>
+              )}
+              {showPublicLand && (
+                <p className="layer-meta">
+                  Five national bodies (FLS, NatureScot, Crown Estate, Scottish
+                  Water, crofting). Not council land and not a title. Zoom 6+.
                 </p>
               )}
             </div>
@@ -1127,6 +1246,7 @@ export default function ScotlandMap() {
                   result.parcel?.properties?.area_sqm ?? result.agr.parcel_area_sqm
                 }
                 fiscal={result.fiscal}
+                platform={result.platform}
                 onDownloadReport={(fmt) => void downloadReport(fmt)}
                 reportDownloading={reportDownloading}
               />

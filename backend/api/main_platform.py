@@ -2,7 +2,7 @@
 
 Use: uvicorn api.main_platform:app
 `api.main:app` remains the core AGR service; this module attaches the
-platform catalogue, VDL overlay, gaps, downloads, and place context.
+platform catalogue, VDL and public-land overlays, gaps, downloads, and place context.
 """
 
 from __future__ import annotations

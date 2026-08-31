@@ -29,6 +29,7 @@ Only layers that can be legally published for free public use are drawn on the m
 | `/api/roll.json?scenario=full_agr` | 32-council AGR roll, with SVDLS vacant ha and illustrative residual |
 | `/api/roll.csv?scenario=full_agr` | Same as CSV |
 | `/api/public-land.json` | Hectares by the five published bodies |
+| `/layers/open/public-land` | Viewport polygons of those five bodies (SG 2024 FeatureServer) |
 | `/api/vdl.json` | SVDLS by owner class |
 | `/api/vdl-councils.json` | Vacant hectares × illustrative full AGR |
 | `/api/place.json?pc=KY7+5NE` | Place lookup: AGR, parcel, vacant, registers |
@@ -42,6 +43,14 @@ Only layers that can be legally published for free public use are drawn on the m
 - Illustrative AGR on vacant hectares uses council-flat full residual per m². It is not a bill
 - The 32-council AGR roll now carries `vacantHa` and `vacantFullAgrGbp`
 - Shareable map story: `/?story=vacant_land` paints the choropleth as that residual
+
+## Public and Crown Estate land
+
+- Official map: [Scottish Public and Crown Estate Land](https://www.arcgis.com/apps/dashboards/a10668ccd4784209bf22e3adcef6b897)
+- Overlay queries the public 2024 FeatureServer in the current map view (largest holdings first, capped)
+- Five bodies only: Forestry and Land Scotland, NatureScot, Scottish Crown Estate, Scottish Water, Crofting Agricultural Holdings
+- Not local-authority land, not a title sheet, not exhaustive even for those bodies
+- A click on the map reports whether the point intersects a published holding
 
 ## Official title
 

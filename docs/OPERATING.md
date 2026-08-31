@@ -23,6 +23,7 @@ npm run dev
 | `GET /square?lat=&lng=` | Live AGR for a W3W cell (`platform` place card attached) |
 | `GET /layers/catalog` | Open-land layers with live / linked / gap status |
 | `GET /layers/open/vdl` | Vacant and derelict land overlay (bbox) |
+| `GET /layers/open/public-land` | Public / Crown Estate overlay (bbox, five bodies) |
 | `GET /platform/place` | Ownership / vacant / gap card |
 | `GET /platform/gaps` | Visible register gaps |
 | `GET /downloads` | Open layer and official source index |
@@ -40,7 +41,7 @@ npm run dev
 | Council AGR | All Scotland | Overview choropleth |
 | W3W grid | Current map view | Zoom ≥ 12; every cell up to cap (then sampled) |
 | Vacant land | Viewport SVDLS sites | Toggle **Vacant land**; zoom ≥ 8 |
-| Public / Crown | Official SG map | Linked, not copied |
+| Public / Crown | Viewport SG 2024 holdings | Toggle **Public land**; zoom ≥ 6. Five bodies only; not a title |
 | Click | Any cell | Full residual assessment + place card |
 
 Full national 3 m precompute is intentionally not stored (~billions of cells).

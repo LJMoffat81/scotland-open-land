@@ -98,3 +98,10 @@ map_layers:
       source: viewport W3W residual grid
     - id: method
       source: valuation method flag on council metrics
+    - id: vdl
+      source: SVDLS FeatureServer (OGL)
+      endpoint: /layers/open/vdl
+    - id: public_land
+      source: SG PublicLand_2024_Update FeatureServer
+      endpoint: /layers/open/public-land
+      note: Five national bodies only; not a title; not local-authority land

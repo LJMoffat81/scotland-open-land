@@ -107,7 +107,17 @@ export type PlatformContext = {
       owner_class?: string | null;
     }>;
   };
-  public_or_crown?: { status?: string; map_url?: string; note?: string };
+  public_or_crown?: {
+    status?: string;
+    on_this_point?: boolean | null;
+    holdings?: Array<{
+      organisation?: string | null;
+      site_name?: string | null;
+      area_ha?: number | null;
+    }>;
+    map_url?: string;
+    note?: string;
+  };
   local_authority_holding?: { status?: string; reason?: string };
   common_good?: { status?: string; reason?: string };
   private_or_sasine?: { status?: string; note?: string };
@@ -296,6 +306,9 @@ export default function AgrBreakdown({
             {platform.vacant_or_derelict && (
               <span className="flag vacant">Vacant / derelict survey site</span>
             )}
+            {platform.public_or_crown?.on_this_point && (
+              <span className="flag public">Public / Crown holding</span>
+            )}
             {platform.filters?.value_band && (
               <span className={`flag band-${platform.filters.value_band}`}>
                 {platform.filters.value_band} rent band
@@ -316,9 +329,21 @@ export default function AgrBreakdown({
                 : ""}
             </p>
           )}
+          {platform.public_or_crown?.on_this_point &&
+            platform.public_or_crown.holdings &&
+            platform.public_or_crown.holdings.length > 0 && (
+              <p className="place-note">
+                {platform.public_or_crown.holdings[0].organisation ||
+                  "Public body"}
+                {platform.public_or_crown.holdings[0].site_name
+                  ? ` \u00b7 ${platform.public_or_crown.holdings[0].site_name}`
+                  : ""}
+              </p>
+            )}
           <p className="place-note muted">
-            Public / Crown holding: not queried at this point \u2014 use the national
-            public-land map. Private names and Sasine land stay on ScotLIS.
+            {platform.public_or_crown?.on_this_point
+              ? "Five national bodies only \u2014 not council land, not a title. Confirm on ScotLIS."
+              : "Public / Crown overlay covers five national bodies only, not councils. Private names and Sasine land stay on ScotLIS."}
           </p>
         </div>
       )}

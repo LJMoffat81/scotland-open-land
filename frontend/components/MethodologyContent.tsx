@@ -388,8 +388,9 @@ square_share = economic_rent_of_square ÷ equal_share_per_person`}
             Map layers also include council multi-metrics (plot AGR, land rent £/m²,
             HPI house prices, AGR as % of price, land share, site capital), SIMD 2020
             deprivation shares, population density, rural valuation-method outlines,
-            and viewport W3W cell AGR — open or residual-derived only (no portal scrape,
-            no owners or sale prices on the parcel fabric).
+            viewport W3W cell AGR, SVDLS vacant land, and the SG public / Crown
+            Estate overlay (five national bodies; not a title) — open or residual-derived
+            only (no portal scrape, no owners or sale prices on the parcel fabric).
           </li>
           <li>
             Glasgow Ward 18 (East Centre) validation case study — toggle on the map

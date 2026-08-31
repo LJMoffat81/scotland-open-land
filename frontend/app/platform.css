@@ -24,6 +24,11 @@
   color: #7a2e00;
 }
 
+.flag.public {
+  background: #d4edda;
+  color: #1b5e4a;
+}
+
 .flag.gap {
   background: #f0e6cc;
   color: #5c4813;

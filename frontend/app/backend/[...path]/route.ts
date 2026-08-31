@@ -33,6 +33,7 @@ async function proxy(request: Request, context: Ctx): Promise<Response> {
     const heavy =
       joined.includes("councils-agr") ||
       joined.includes("w3w-grid") ||
+      joined.includes("layers/open") ||
       joined.includes("assessment/report");
     const timeoutMs = heavy ? 90_000 : 25_000;
 

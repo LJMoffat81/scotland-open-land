@@ -176,6 +176,7 @@ Docs: http://127.0.0.1:8000/docs
 | `GET /layers/councils-agr` | Council choropleth (plot AGR £/year) |
 | `GET /layers/w3w-grid?south&west&north&east` | Viewport W3W cells with AGR (capped) |
 | `GET /layers/open/vdl?south&west&north&east` | Viewport vacant/derelict land (SVDLS, OGL) |
+| `GET /layers/open/public-land?south&west&north&east` | Viewport public / Crown land (SG 2024, five bodies) |
 
 Ops: [docs/OPERATING.md](docs/OPERATING.md) · `.\scripts\run_professional_local.ps1`
 
