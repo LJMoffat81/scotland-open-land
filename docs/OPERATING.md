@@ -9,7 +9,7 @@
 # API
 cd backend
 .\.venv\Scripts\Activate.ps1
-uvicorn api.main:app --reload --app-dir .
+uvicorn api.main_platform:app --reload --app-dir .
 
 # UI (other terminal)
 cd frontend
@@ -20,7 +20,12 @@ npm run dev
 
 | Endpoint | Use |
 |----------|-----|
-| `GET /square?lat=&lng=` | Live AGR for a W3W cell |
+| `GET /square?lat=&lng=` | Live AGR for a W3W cell (`platform` place card attached) |
+| `GET /layers/catalog` | Open-land layers with live / linked / gap status |
+| `GET /layers/open/vdl` | Vacant and derelict land overlay (bbox) |
+| `GET /platform/place` | Ownership / vacant / gap card |
+| `GET /platform/gaps` | Visible register gaps |
+| `GET /downloads` | Open layer and official source index |
 | `GET /assessment/report?format=markdown\|json` | Downloadable assessment pack |
 | `GET /validation/ward18-qa-pack` | Spatial + ratio + mini-roll for Ward 18 |
 | `GET /validation/ratio-study` | Residual vs sales-comp ratios |
@@ -34,7 +39,9 @@ npm run dev
 |-------|----------|------|
 | Council AGR | All Scotland | Overview choropleth |
 | W3W grid | Current map view | Zoom ≥ 12; every cell up to cap (then sampled) |
-| Click | Any cell | Full residual assessment |
+| Vacant land | Viewport SVDLS sites | Toggle; zoom ≥ 8 |
+| Public / Crown | Official SG map | Linked, not copied |
+| Click | Any cell | Full residual assessment + place card |
 
 Full national 3 m precompute is intentionally not stored (~billions of cells).
 
