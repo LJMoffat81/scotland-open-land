@@ -1,4 +1,4 @@
-from layers.platform import platform_catalog, scotlis_links
+from layers.platform import place_context, platform_catalog, scotlis_links
 
 
 def test_platform_catalog_has_brief_layers():
@@ -24,3 +24,13 @@ def test_scotlis_links_point_to_official_service():
     assert "ros.gov.uk" in links["about"]
     assert links["search_hint"] == "EH1 1YZ"
     assert "title" in links["note"].lower()
+
+
+def test_place_context_exposes_gaps():
+    card = place_context(55.9533, -3.1883, postcode="EH1 1YZ")
+    assert "vacant_or_derelict" in card
+    assert card["local_authority_holding"]["status"] == "gap"
+    assert card["common_good"]["status"] == "gap"
+    assert card["private_or_sasine"]["status"] == "gap"
+    assert "scotlis.ros.gov.uk" in card["scotlis"]["public_home"]
+    assert card["filters"]["public_private"] == "unknown"
