@@ -1,14 +1,62 @@
-# Scotland AGR Map
+# Scotland AGR Map → Open Land Platform
 
-Professional **Annual Ground Rent** assessment tool for Scotland (SLRG-aligned).  
-Each **What3Words 3×3 m square** gets a residual AGR estimate; the public UI leads with a clear £/year figure.
+**Annual Ground Rent assessment at the core of a free, public, open land information system for Scotland.**
+
+Scotland AGR Map began as a professional, SLRG-aligned tool that estimates **Annual Ground Rent** (the rental value of land alone, excluding buildings and improvements) for every location in Scotland. It remains the analytical heart of the project.
+
+We are now expanding it into a broader **open land information platform** — a single free public resource that brings together:
+
+- Modelled land values and AGR / Land Value Tax scenario tools (the original core)
+- Free cadastral and spatial data from Registers of Scotland
+- Public, Crown and local-authority land holdings
+- Vacant and derelict land
+- Clear ownership and value layers side-by-side
+- Full transparency about data sources, methodology, currency and gaps
+
+The platform is permanently free for everyone to view, explore and download (where licences allow). It is built for public education, research, policy analysis, journalism, community groups and anyone who wants to understand both **who holds land** and **what the land is worth** under Georgist principles.
 
 **Build standard:** [docs/PROFESSIONAL_STANDARD.md](docs/PROFESSIONAL_STANDARD.md) · **Data policy:** [docs/DATA_LICENSING.md](docs/DATA_LICENSING.md) (no portal scraping).
 
-**Operational charge maths (valuer residual roll):**  
-HABU existing use → **MV − DRC** (Wightman residual) → Pickard economic site capital → **× 5% yield** → Sandilands scenarios.
+### Core principles
 
-**Intellectual lineage** (methodology and breakdown notes — does not change residual maths):
+- **AGR first** — the residual valuation engine (Wightman → Pickard → Sandilands scenarios) remains the methodological foundation.
+- **Open and free** — only data that can be legally published for free public use is included in the open layers.
+- **Transparent** — every estimate carries methodology notes, uncertainty indicators and source attribution. Research estimates are never presented as official valuations or tax bills.
+- **Honest about limits** — private owner names and Sasine land remain incomplete or paid; the platform makes these gaps visible rather than hiding them.
+- **Professional standards** — no portal scraping, strict licensing compliance, provenance tracking, and clear separation of open versus licensed data.
+
+### What the platform provides
+
+**Value & AGR layer (existing core)**
+- Residual site-value estimates and Annual Ground Rent calculations
+- 3×3 m What3Words grid and parcel-level views
+- Policy scenarios (full AGR, tax-replacement, revenue-neutral options, equal-share illustrations)
+- Full public methodology and integrity caveats
+
+**Spatial & ownership layers (expanding)**
+- ROS INSPIRE cadastral parcels (registered extents)
+- Indicative local-authority land ownership and asset registers
+- Community Asset Transfer and Common Good registers
+- Vacant & Derelict Land Survey sites
+- Aggregated public-body and Crown Estate holdings
+- Planning and land-use context where openly available
+
+**Tools & access**
+- Interactive map with toggleable layers
+- Search and filtering by location, value band, public/private status, vacant land, etc.
+- LVT / AGR scenario calculators
+- Open downloads of freely licensed layers
+- Public API for the open data
+- Clear links to ScotLIS for users who need official title sheets
+
+### Intellectual foundation
+
+The valuation core continues the lineage already documented in this repository: Adam Smith and David Ricardo on ground rent, William Ogilvie’s equal natural right, Henry George, Mason Gaffney, Fred Harrison, Joseph Stiglitz, Laurie Macfarlane, Martin Adams (Unitism), Roger Sandilands, Andy Wightman’s residual method, and Duncan Pickard’s economic rent approach, among others.
+
+The broader platform simply makes the spatial and ownership context of that rent visible and usable by the public.
+
+**Operational charge maths (valuer residual roll):**
+HABU existing use → **MV − DRC** (Wightman residual) → Pickard economic site capital → **× 5% yield** → Sandilands scenarios.
 
 | Layer | Thinker | Role |
 |-------|---------|------|
@@ -35,6 +83,38 @@ Also see: Mill, Paine, **School of Cooperative Individualism** (Georgist source 
 
 Built for [SLRG](https://www.slrg.scot) as a standalone public education and advocacy tool.
 
+### Status and direction
+
+The current codebase already delivers a working AGR engine, map interface, council-level estimates, ROS INSPIRE integration, validation workflows and professional documentation.
+
+Next development prioritises:
+
+1. Surfacing the free cadastral and public-land layers more prominently
+2. Adding vacant & derelict land and local-authority holdings
+3. Improving national statistics and data-gap indicators
+4. Keeping the AGR calculation engine and scenario tools as the analytical centre
+
+The project remains aligned with SLRG principles and is intended as a permanent free public resource.
+
+**Phase 0 complete:** monorepo scaffold, 3 m grid snap, Scotland map UI.
+
+**Phase 1 complete:** UK HPI ETL, council-area lookup, Wightman residual valuation, postcode search (postcodes.io).
+
+**Phase 2 complete:** Full AGR breakdown panel, three policy scenarios, live methodology page.
+
+**Phase 3 complete:** Council boundary polygons, ROS INSPIRE parcel lookup, Glasgow Ward 18 validation, W3W API support.
+
+**Phase 4 complete:** Vercel + Railway deployment config, CI, economist sign-off workflow.
+
+### Licence & contribution
+
+- Build standard: [docs/PROFESSIONAL_STANDARD.md](docs/PROFESSIONAL_STANDARD.md)
+- Data policy: [docs/DATA_LICENSING.md](docs/DATA_LICENSING.md)
+- Data acquisition: [docs/DATA_ACQUISITION.md](docs/DATA_ACQUISITION.md)
+- Operating notes: [docs/OPERATING.md](docs/OPERATING.md)
+
+Only data that can be legally published for free public use belongs in the open layers. Contributions should follow the professional standard and data-licensing rules. Research estimates are never official valuations or tax bills.
+
 ## Stack
 
 | Layer | Technology |
@@ -49,9 +129,9 @@ Built for [SLRG](https://www.slrg.scot) as a standalone public education and adv
 
 ## Professional data stance
 
-- **Allowed:** UK HPI, ROS open/licensed products, postcodes.io, documented rebuild tables  
-- **Forbidden:** scraping Zoopla, Rightmove, ESPC, or grey-market scraped dumps  
-- **Next:** acquire ROS pilot sales for Ward 18 / Glasgow → optional OpenAVMKit comparison  
+- **Allowed:** UK HPI, ROS open/licensed products, postcodes.io, documented rebuild tables
+- **Forbidden:** scraping Zoopla, Rightmove, ESPC, or grey-market scraped dumps
+- **Next:** acquire ROS pilot sales for Ward 18 / Glasgow → optional OpenAVMKit comparison
 
 See [docs/DATA_ACQUISITION.md](docs/DATA_ACQUISITION.md).
 
@@ -85,7 +165,7 @@ uvicorn api.main:app --reload --app-dir .
 ```
 
 API: http://127.0.0.1:8000  
-Docs: http://127.0.0.1:8000/docs  
+Docs: http://127.0.0.1:8000/docs
 
 | Endpoint | Purpose |
 |----------|---------|
@@ -135,18 +215,6 @@ scotland-agr-map/
 ## Legacy prototype
 
 The original Streamlit prototype is preserved at git tag `legacy/streamlit-prototype`.
-
-## Status
-
-**Phase 0 complete:** monorepo scaffold, 3m grid snap, Scotland map UI.
-
-**Phase 1 complete:** UK HPI ETL, council-area lookup, Wightman residual valuation, postcode search (postcodes.io).
-
-**Phase 2 complete:** Full AGR breakdown panel, three policy scenarios, live methodology page.
-
-**Phase 3 complete:** Council boundary polygons, ROS INSPIRE parcel lookup, Glasgow Ward 18 validation, W3W API support.
-
-**Phase 4 complete:** Vercel + Railway deployment config, CI, economist sign-off workflow.
 
 ## Deploy (standalone site)
 
