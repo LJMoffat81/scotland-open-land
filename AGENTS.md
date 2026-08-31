@@ -2,27 +2,37 @@
 
 ## Product
 
-Professional **Scotland Annual Ground Rent** tool: place-based estimates on a What3Words 3×3 m grid, SLRG methodology, public education UI.
+Build the **open land information platform** described in [docs/PLATFORM.md](docs/PLATFORM.md).
+
+That brief is the destination. Do not rewrite it to match whatever happens to be shipped today. The AGR engine is the core; ownership, cadastral, public-land and vacant-land layers are in scope.
+
+Annual Ground Rent remains first: residual site value on a What3Words 3×3 m grid, SLRG methodology, public education UI.
 
 ## Do
 
-- Prefer residual valuer logic and documented config  
-- Use only open or licensed data (see `docs/DATA_LICENSING.md`)  
-- Keep map residual vs national rent pool distinct  
-- Add tests for valuation and data schema changes  
-- Preserve clarity UI: public £/year first, depth under tabs  
+- Follow [docs/PLATFORM.md](docs/PLATFORM.md) when choosing what to build next
+- Prefer residual valuer logic and documented config
+- Use only open or licensed data (see `docs/DATA_LICENSING.md`)
+- Keep map residual vs national rent pool distinct
+- Make data gaps visible (Sasine, private names, missing public registers)
+- Add tests for valuation and data schema changes
+- Preserve clarity UI: public £/year first, depth under tabs
+- Keep AGR / scenario tools as the analytical centre when adding spatial layers
 
 ## Do not
 
-- Scrape property portals (Zoopla, Rightmove, ESPC, …)  
-- Commit API keys or full paid datasets  
-- Present synthetic fixtures as real ROS sales in the UI  
-- Silently change signed-off `agr.yaml` defaults without notes  
+- Shrink the platform brief to the current map-only feature set
+- Scrape property portals (Zoopla, Rightmove, ESPC, …)
+- Commit API keys or full paid datasets
+- Present synthetic fixtures as real ROS sales in the UI
+- Silently change signed-off `agr.yaml` defaults without notes
+- Present research estimates as official valuations or tax bills
 
 ## Key paths
 
 | Path | Role |
 |------|------|
+| `docs/PLATFORM.md` | Product brief — build toward this |
 | `backend/agr/` | Assessment engine |
 | `backend/datasources/` | Data contracts and loaders |
 | `data/config/` | Parameters and source registry |

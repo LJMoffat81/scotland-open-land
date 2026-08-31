@@ -1,5 +1,9 @@
 # Scotland AGR Map → Open Land Platform
 
+**Product brief:** [docs/PLATFORM.md](docs/PLATFORM.md)
+
+That document is the guide for this repository. Implementation follows it. The brief is not edited down to the current build.
+
 **Annual Ground Rent assessment at the core of a free, public, open land information system for Scotland.**
 
 Scotland AGR Map began as a professional, SLRG-aligned tool that estimates **Annual Ground Rent** (the rental value of land alone, excluding buildings and improvements) for every location in Scotland. It remains the analytical heart of the project.
@@ -83,9 +87,7 @@ Also see: Mill, Paine, **School of Cooperative Individualism** (Georgist source 
 
 Built for [SLRG](https://www.slrg.scot) as a standalone public education and advocacy tool.
 
-### Status and direction
-
-The current codebase already delivers a working AGR engine, map interface, council-level estimates, ROS INSPIRE integration, validation workflows and professional documentation.
+### Direction
 
 Next development prioritises:
 
@@ -96,24 +98,21 @@ Next development prioritises:
 
 The project remains aligned with SLRG principles and is intended as a permanent free public resource.
 
-**Phase 0 complete:** monorepo scaffold, 3 m grid snap, Scotland map UI.
-
-**Phase 1 complete:** UK HPI ETL, council-area lookup, Wightman residual valuation, postcode search (postcodes.io).
-
-**Phase 2 complete:** Full AGR breakdown panel, three policy scenarios, live methodology page.
-
-**Phase 3 complete:** Council boundary polygons, ROS INSPIRE parcel lookup, Glasgow Ward 18 validation, W3W API support.
-
-**Phase 4 complete:** Vercel + Railway deployment config, CI, economist sign-off workflow.
-
 ### Licence & contribution
 
+- Product brief: [docs/PLATFORM.md](docs/PLATFORM.md)
 - Build standard: [docs/PROFESSIONAL_STANDARD.md](docs/PROFESSIONAL_STANDARD.md)
 - Data policy: [docs/DATA_LICENSING.md](docs/DATA_LICENSING.md)
 - Data acquisition: [docs/DATA_ACQUISITION.md](docs/DATA_ACQUISITION.md)
 - Operating notes: [docs/OPERATING.md](docs/OPERATING.md)
 
 Only data that can be legally published for free public use belongs in the open layers. Contributions should follow the professional standard and data-licensing rules. Research estimates are never official valuations or tax bills.
+
+---
+
+## Current codebase
+
+The sections below are how to run and deploy what is in the repository now. They do not limit the brief above.
 
 ## Stack
 
@@ -208,7 +207,7 @@ scotland-agr-map/
 ├── frontend/          # Next.js + MapLibre map UI
 ├── backend/           # FastAPI AGR engine
 ├── data/config/       # agr.yaml (SLRG parameters)
-├── docs/              # Methodology and references
+├── docs/              # Brief, methodology and references
 └── docker-compose.yml
 ```
 
