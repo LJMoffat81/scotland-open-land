@@ -39,7 +39,7 @@ npm run dev
 |-------|----------|------|
 | Council AGR | All Scotland | Overview choropleth |
 | W3W grid | Current map view | Zoom ≥ 12; every cell up to cap (then sampled) |
-| Vacant land | Viewport SVDLS sites | Toggle; zoom ≥ 8 |
+| Vacant land | Viewport SVDLS sites | Toggle **Vacant land**; zoom ≥ 8 |
 | Public / Crown | Official SG map | Linked, not copied |
 | Click | Any cell | Full residual assessment + place card |
 

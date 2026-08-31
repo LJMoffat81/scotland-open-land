@@ -288,6 +288,7 @@ export default function ScotlandMap() {
   const [choropleth, setChoropleth] = useState<MetricId | "off">("gross_liability");
   const [showBoundaries, setShowBoundaries] = useState(true);
   const [showCellGrid, setShowCellGrid] = useState(false);
+  const [showVdl, setShowVdl] = useState(false);
   const [showMethod, setShowMethod] = useState(false);
   const [layerBusy, setLayerBusy] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -533,6 +534,30 @@ export default function ScotlandMap() {
         paint: { "line-color": "#7f0000", "line-width": 0.4, "line-opacity": 0.4 },
       });
 
+      map.addSource("vdl-overlay", {
+        type: "geojson",
+        data: emptyCollection,
+        attribution:
+          "SVDLS © Scottish Government (OGL v3.0). Survey polygons, not a title.",
+      });
+      map.addLayer({
+        id: "vdl-fill",
+        type: "fill",
+        source: "vdl-overlay",
+        layout: { visibility: "none" },
+        paint: {
+          "fill-color": "#c45c26",
+          "fill-opacity": 0.38,
+        },
+      });
+      map.addLayer({
+        id: "vdl-line",
+        type: "line",
+        source: "vdl-overlay",
+        layout: { visibility: "none" },
+        paint: { "line-color": "#7a2e00", "line-width": 1.1, "line-opacity": 0.9 },
+      });
+
       map.addSource("parcels-wms", {
         type: "raster",
         tiles: ["/api/parcels/tiles/{z}/{x}/{y}"],
@@ -758,6 +783,69 @@ export default function ScotlandMap() {
       map.off("moveend", onMove);
     };
   }, [mapReady, showCellGrid, scenario]);
+
+  // SVDLS vacant / derelict overlay (OGL survey polygons)
+  useEffect(() => {
+    if (!mapReady) return;
+    const map = mapRef.current;
+    if (!map) return;
+
+    const setVis = (vis: "visible" | "none") => {
+      if (!map.getLayer("vdl-fill")) return;
+      map.setLayoutProperty("vdl-fill", "visibility", vis);
+      map.setLayoutProperty("vdl-line", "visibility", vis);
+    };
+
+    if (!showVdl) {
+      setVis("none");
+      return;
+    }
+
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout> | null = null;
+    let inFlight = false;
+
+    const loadVdl = () => {
+      if (cancelled || !mapRef.current || inFlight) return;
+      const b = map.getBounds();
+      if (!b) return;
+      if (map.getZoom() < 8) {
+        setVis("none");
+        return;
+      }
+      inFlight = true;
+      setLayerBusy(true);
+      const path =
+        `/layers/open/vdl?south=${b.getSouth()}&west=${b.getWest()}` +
+        `&north=${b.getNorth()}&east=${b.getEast()}&max_features=80`;
+      void apiJson<GeoJSON.FeatureCollection>(path)
+        .then((data) => {
+          if (cancelled) return;
+          (map.getSource("vdl-overlay") as GeoJSONSource)?.setData(data);
+          setVis("visible");
+        })
+        .catch(() => {
+          if (!cancelled) setVis("none");
+        })
+        .finally(() => {
+          inFlight = false;
+          if (!cancelled) setLayerBusy(false);
+        });
+    };
+
+    const onMove = () => {
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(loadVdl, 700);
+    };
+
+    loadVdl();
+    map.on("moveend", onMove);
+    return () => {
+      cancelled = true;
+      if (timer) clearTimeout(timer);
+      map.off("moveend", onMove);
+    };
+  }, [mapReady, showVdl]);
 
   useEffect(() => {
     if (!mapReady) return;
@@ -993,6 +1081,14 @@ export default function ScotlandMap() {
                 </button>
                 <button
                   type="button"
+                  className={showVdl ? "chip active" : "chip"}
+                  onClick={() => setShowVdl((v) => !v)}
+                  title="Scottish vacant and derelict land survey sites (zoom 8+)"
+                >
+                  Vacant land
+                </button>
+                <button
+                  type="button"
                   className={showMethod ? "chip active" : "chip"}
                   onClick={() => setShowMethod((v) => !v)}
                   title="Outline rural productive-method councils"
@@ -1000,6 +1096,11 @@ export default function ScotlandMap() {
                   Rural method
                 </button>
               </div>
+              {showVdl && (
+                <p className="layer-meta">
+                  SVDLS survey sites (OGL) — owner class is not a title. Zoom 8+.
+                </p>
+              )}
             </div>
           </div>
 

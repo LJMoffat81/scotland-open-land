@@ -175,6 +175,7 @@ Docs: http://127.0.0.1:8000/docs
 | `GET /sales/status` | Sales pipeline status |
 | `GET /layers/councils-agr` | Council choropleth (plot AGR £/year) |
 | `GET /layers/w3w-grid?south&west&north&east` | Viewport W3W cells with AGR (capped) |
+| `GET /layers/open/vdl?south&west&north&east` | Viewport vacant/derelict land (SVDLS, OGL) |
 
 Ops: [docs/OPERATING.md](docs/OPERATING.md) · `.\scripts\run_professional_local.ps1`
 
