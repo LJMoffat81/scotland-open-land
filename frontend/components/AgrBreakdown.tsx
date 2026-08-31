@@ -94,6 +94,35 @@ export type PlaceFiscal = {
   note?: string;
 };
 
+export type PlatformContext = {
+  vacant_or_derelict?: boolean;
+  parcel?: { found?: boolean; label?: string | null; inspire_id?: string | null };
+  vdl?: {
+    intersects?: boolean;
+    sites?: Array<{
+      name?: string | null;
+      site_type?: string | null;
+      size_ha?: number | null;
+      local_authority?: string | null;
+      owner_class?: string | null;
+    }>;
+  };
+  public_or_crown?: { status?: string; map_url?: string; note?: string };
+  local_authority_holding?: { status?: string; reason?: string };
+  common_good?: { status?: string; reason?: string };
+  private_or_sasine?: { status?: string; note?: string };
+  scotlis?: {
+    public_home?: string;
+    search_hint?: string;
+    note?: string;
+  };
+  filters?: {
+    vacant?: boolean;
+    public_private?: string;
+    value_band?: string | null;
+  };
+};
+
 type Props = {
   agr: AgrResult;
   areaSqm: number;
@@ -106,6 +135,7 @@ type Props = {
   parcelLabel?: string | null;
   parcelAreaSqm?: number | null;
   fiscal?: PlaceFiscal | null;
+  platform?: PlatformContext | null;
   onDownloadReport?: (format: "markdown" | "json") => void;
   reportDownloading?: boolean;
 };
@@ -125,7 +155,7 @@ const SCENARIO_SHORT: Record<ScenarioId, string> = {
 };
 
 function formatGbp(value: number, digits = 2) {
-  return `£${value.toLocaleString("en-GB", {
+  return `\u00a3${value.toLocaleString("en-GB", {
     minimumFractionDigits: digits,
     maximumFractionDigits: digits,
   })}`;
@@ -143,6 +173,7 @@ export default function AgrBreakdown({
   parcelLabel,
   parcelAreaSqm,
   fiscal,
+  platform,
   onDownloadReport,
   reportDownloading,
 }: Props) {
@@ -168,7 +199,7 @@ export default function AgrBreakdown({
   const headlineIsPlot =
     !headlineIsParcel && plotFull != null && plotFull > 0 && !fiscal;
 
-  const place = [postcode, agr.council_name].filter(Boolean).join(" · ");
+  const place = [postcode, agr.council_name].filter(Boolean).join(" \u00b7 ");
   const w3wDisplay = what3words
     ? `///${what3words.replace(/^\/+/, "")}`
     : null;
@@ -196,16 +227,16 @@ export default function AgrBreakdown({
 
       <p className="headline-caption">
         {fiscal
-          ? "Land rent liability (site only — not buildings or wages)"
+          ? "Land rent liability (site only \u2014 not buildings or wages)"
           : headlineIsParcel
             ? `Property parcel${parcelLabel ? ` ${parcelLabel}` : ""}${
                 parcelAreaSqm
-                  ? ` · ${Math.round(parcelAreaSqm).toLocaleString("en-GB")} m²`
+                  ? ` \u00b7 ${Math.round(parcelAreaSqm).toLocaleString("en-GB")} m\u00b2`
                   : ""
               }`
             : headlineIsPlot
-              ? `Typical plot (~${agr.notional_plot_sqm?.toLocaleString("en-GB")} m²)`
-              : `This ${areaSqm} m² cell · ${formatGbp(active.annual_charge_gbp)}/yr`}
+              ? `Typical plot (~${agr.notional_plot_sqm?.toLocaleString("en-GB")} m\u00b2)`
+              : `This ${areaSqm} m\u00b2 cell \u00b7 ${formatGbp(active.annual_charge_gbp)}/yr`}
       </p>
 
       {fiscal && (
@@ -216,12 +247,12 @@ export default function AgrBreakdown({
           </div>
           <div className="fiscal-row">
             <span>Equal dividend (1 person)</span>
-            <strong>−{formatGbp(fiscal.dividend_gbp, 0)}</strong>
+            <strong>\u2212{formatGbp(fiscal.dividend_gbp, 0)}</strong>
           </div>
           {fiscal.remote_credit_gbp > 0 && (
             <div className="fiscal-row">
               <span>Remote / island credit</span>
-              <strong>−{formatGbp(fiscal.remote_credit_gbp, 0)}</strong>
+              <strong>\u2212{formatGbp(fiscal.remote_credit_gbp, 0)}</strong>
             </div>
           )}
           <div className={`fiscal-row net ${netClass}`}>
@@ -233,9 +264,9 @@ export default function AgrBreakdown({
           </div>
           <p className="fiscal-role-tag">
             {fiscal.role === "net_receiver"
-              ? "Net receiver — low rent / remote support"
+              ? "Net receiver \u2014 low rent / remote support"
               : fiscal.role === "net_contributor"
-                ? "Net contributor — higher land rent funds the state"
+                ? "Net contributor \u2014 higher land rent funds the state"
                 : "Roughly neutral"}
           </p>
         </div>
@@ -259,18 +290,76 @@ export default function AgrBreakdown({
         })}
       </div>
 
+      {platform && (
+        <div className="place-context">
+          <div className="place-flags">
+            {platform.vacant_or_derelict && (
+              <span className="flag vacant">Vacant / derelict survey site</span>
+            )}
+            {platform.filters?.value_band && (
+              <span className={`flag band-${platform.filters.value_band}`}>
+                {platform.filters.value_band} rent band
+              </span>
+            )}
+            {platform.parcel?.found === false && (
+              <span className="flag gap">No INSPIRE parcel here</span>
+            )}
+          </div>
+          {platform.vdl?.sites && platform.vdl.sites.length > 0 && (
+            <p className="place-note">
+              {platform.vdl.sites[0].name || "SVDLS site"}
+              {platform.vdl.sites[0].site_type
+                ? ` \u00b7 ${platform.vdl.sites[0].site_type}`
+                : ""}
+              {platform.vdl.sites[0].owner_class
+                ? ` \u00b7 class ${platform.vdl.sites[0].owner_class}`
+                : ""}
+            </p>
+          )}
+          <p className="place-note muted">
+            Public / Crown holding: not queried at this point \u2014 use the national
+            public-land map. Private names and Sasine land stay on ScotLIS.
+          </p>
+        </div>
+      )}
+
       <p className="result-links">
         <a href="/methodology">How this is calculated</a>
+        {platform?.scotlis?.public_home && (
+          <>
+            {" \u00b7 "}
+            <a
+              href={platform.scotlis.public_home}
+              target="_blank"
+              rel="noreferrer"
+              title={platform.scotlis.note}
+            >
+              Official title (ScotLIS)
+            </a>
+          </>
+        )}
+        {platform?.public_or_crown?.map_url && (
+          <>
+            {" \u00b7 "}
+            <a
+              href={platform.public_or_crown.map_url}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Public / Crown map
+            </a>
+          </>
+        )}
         {onDownloadReport && (
           <>
-            {" · "}
+            {" \u00b7 "}
             <button
               type="button"
               className="linkish"
               disabled={reportDownloading}
               onClick={() => onDownloadReport("markdown")}
             >
-              {reportDownloading ? "Preparing…" : "MSP brief"}
+              {reportDownloading ? "Preparing\u2026" : "MSP brief"}
             </button>
           </>
         )}
