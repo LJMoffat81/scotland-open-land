@@ -14,7 +14,7 @@ Only layers that can be legally published for free public use are drawn on the m
 | Council extents | Live | ROS open | AGR choropleth |
 | SVDLS vacant & derelict | Live | OGL | Survey polygons; owner class ≠ title. National and per-council hectare rolls |
 | Public / Crown Estate | Live overlay | SG 2024 FeatureServer | Five bodies only, non-exhaustive. Not local-authority land |
-| Planning applications | Linked | Per-council portals | Official view pages where verified; no national drawable WMS |
+| Planning applications | Linked | Per-council portals | All 32 councils have a verified official view page. No national drawable WMS |
 | CAT / council assets | Linked | Per-council pages | Spatial Hub amalgamated register still requires login |
 | Common Good | Linked | Per-council registers | No single open national spatial file |
 | Fife land map | Linked | Fife Council | This council’s own terrier. Not a national layer |
