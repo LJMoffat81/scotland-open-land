@@ -203,7 +203,7 @@ App: http://localhost:3000
 ## Project structure
 
 ```
-scotland-agr-map/
+scotland-open-land/    # local clone folder: slrg-agr-map
 ├── frontend/          # Next.js + MapLibre map UI
 ├── backend/           # FastAPI AGR engine
 ├── data/config/       # agr.yaml (SLRG parameters)
