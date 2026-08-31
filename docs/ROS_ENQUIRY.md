@@ -1,6 +1,6 @@
 # Registers of Scotland — research data enquiry (template)
 
-Use this when requesting a pilot extract for the Scotland AGR Map.
+Use this when requesting a pilot extract for Scotland Open Land.
 
 ---
 

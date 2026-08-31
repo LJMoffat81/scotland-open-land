@@ -37,7 +37,7 @@ from validation.glasgow_ward_18 import run_validation
 from validation.ratio_study import ratio_study_points
 
 app = FastAPI(
-    title="Scotland AGR Map API",
+    title="Scotland Open Land API",
     description=(
         "Professional Annual Ground Rent assessments for Scotland "
         "(What3Words 3×3 m grid, SLRG-aligned residual roll)."

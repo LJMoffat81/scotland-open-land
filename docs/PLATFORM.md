@@ -1,4 +1,4 @@
-# Scotland AGR Map → Open Land Platform
+# Scotland Open Land
 
 This is the product brief. Build toward it. Do not shrink it to match the current codebase.
 

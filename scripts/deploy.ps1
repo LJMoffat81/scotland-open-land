@@ -1,10 +1,10 @@
-# Scotland AGR Map — one-time deploy helper
+# Scotland Open Land — one-time deploy helper
 # Requires: Node.js, Railway account, Vercel account
 
 $ErrorActionPreference = "Stop"
 $RepoRoot = Split-Path -Parent $PSScriptRoot
 
-Write-Host "=== Scotland AGR Map deploy ===" -ForegroundColor Cyan
+Write-Host "=== Scotland Open Land deploy ===" -ForegroundColor Cyan
 Write-Host ""
 
 Write-Host "Step 1: Railway (API)" -ForegroundColor Yellow

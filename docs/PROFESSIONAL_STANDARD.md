@@ -1,4 +1,4 @@
-# Professional standard — Scotland AGR Map
+# Professional standard — Scotland Open Land
 
 This project is built as a **professional Annual Ground Rent assessment tool** for Scotland (education, advocacy, and research), not a throwaway prototype. We start as we mean to go on.
 

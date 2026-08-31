@@ -827,7 +827,7 @@ export default function ScotlandMap() {
       <aside className="sidebar">
         <header className="brand brand-compact">
           <div className="brand-row">
-            <h1>Scotland AGR</h1>
+            <h1>Scotland Open Land</h1>
             <nav className="brand-nav">
               <a href="/methodology">About</a>
               <a href="https://www.slrg.scot" target="_blank" rel="noreferrer">

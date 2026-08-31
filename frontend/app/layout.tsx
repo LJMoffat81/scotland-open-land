@@ -3,9 +3,9 @@ import "./globals.css";
 import "./platform.css";
 
 export const metadata: Metadata = {
-  title: "Scotland AGR Map",
+  title: "Scotland Open Land",
   description:
-    "Interactive Annual Ground Rent map for Scotland — one What3Words square at a time.",
+    "Open land information for Scotland — Annual Ground Rent at every place.",
 };
 
 export default function RootLayout({

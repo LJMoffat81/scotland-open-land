@@ -1,4 +1,4 @@
-# AGENTS.md — working on Scotland AGR Map
+# AGENTS.md — working on Scotland Open Land
 
 ## Product
 

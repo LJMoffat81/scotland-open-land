@@ -1,4 +1,4 @@
-# Scotland AGR Map — Methodology
+# Scotland Open Land — Methodology
 
 ## What is AGR?
 
