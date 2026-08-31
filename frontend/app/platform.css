@@ -1,0 +1,60 @@
+.place-context {
+  margin: 0.75rem 0 0.25rem;
+}
+
+.place-flags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 0.4rem;
+}
+
+.flag {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  background: #e4eaf1;
+  color: #243b53;
+}
+
+.flag.vacant {
+  background: #f6e1d0;
+  color: #7a2e00;
+}
+
+.flag.gap {
+  background: #f0e6cc;
+  color: #5c4813;
+}
+
+.flag.band-low {
+  background: #d8f3dc;
+  color: #1b4332;
+}
+
+.flag.band-mid {
+  background: #d6eaf8;
+  color: #1b4f72;
+}
+
+.flag.band-high {
+  background: #f5d0d0;
+  color: #6b1111;
+}
+
+.place-note {
+  margin: 0.25rem 0 0;
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
+.place-note.muted {
+  color: #627d98;
+}
+
+a.chip.link-chip {
+  text-decoration: none;
+  color: inherit;
+}
