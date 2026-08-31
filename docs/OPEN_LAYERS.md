@@ -6,8 +6,7 @@ Licensing: [DATA_LICENSING.md](DATA_LICENSING.md).
 Only layers that can be legally published for free public use are drawn on the map. Everything else is a **visible gap** with a link to the official source.
 
 | Layer | Status | Licence | Notes |
-|-------|--------|---------|
-|-------|
+|-------|--------|---------|-------|
 | AGR / scenarios | Live | Research estimate | Residual engine — not a rates bill |
 | ROS INSPIRE parcels | Live | ROS INSPIRE WMS | Geometry only; no owners |
 | SVDLS vacant & derelict | Live overlay | OGL | Survey polygons; owner class ≠ title |
