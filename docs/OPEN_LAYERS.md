@@ -26,12 +26,13 @@ Only layers that can be legally published for free public use are drawn on the m
 
 | Endpoint | Content |
 |----------|--------|
-| `/api/roll.json?scenario=full_agr` | 32-council AGR roll |
+| `/api/roll.json?scenario=full_agr` | 32-council AGR roll, with SVDLS vacant ha and illustrative residual |
 | `/api/roll.csv?scenario=full_agr` | Same as CSV |
 | `/api/public-land.json` | Hectares by the five published bodies |
 | `/api/vdl.json` | SVDLS by owner class |
 | `/api/vdl-councils.json` | Vacant hectares × illustrative full AGR |
 | `/api/place.json?pc=KY7+5NE` | Place lookup: AGR, parcel, vacant, registers |
+| `/api/registers.json` | Verified official Common Good / CAT / planning / land-map URLs |
 | `/api/catalog.json` | Live / linked / gap register |
 
 ## Vacant and derelict land
@@ -39,6 +40,7 @@ Only layers that can be legally published for free public use are drawn on the m
 - Definitive register: [SVDLS site register](https://www.gov.scot/publications/the-scottish-vacant-and-derelict-land-survey-site-register/)
 - Map overlay and rolls query a public FeatureServer republish of that survey year
 - Illustrative AGR on vacant hectares uses council-flat full residual per m². It is not a bill
+- The 32-council AGR roll now carries `vacantHa` and `vacantFullAgrGbp`
 
 ## Official title
 
