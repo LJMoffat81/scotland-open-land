@@ -63,3 +63,68 @@ a.chip.link-chip {
   text-decoration: none;
   color: inherit;
 }
+
+.coverage-panel {
+  margin-top: 0.7rem;
+  padding-top: 0.55rem;
+  border-top: 1px solid #e4eaf1;
+}
+
+.coverage-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+}
+
+.coverage-counts {
+  display: flex;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+}
+
+.coverage-list {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+}
+
+.coverage-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.22rem 0;
+  font-size: 0.78rem;
+}
+
+.coverage-name {
+  flex: 1;
+  color: var(--slrg-text);
+  min-width: 0;
+}
+
+.coverage-name.toggle {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+}
+
+.coverage-name.toggle.on {
+  font-weight: 650;
+  color: var(--slrg-navy);
+}
+
+.coverage-src {
+  font-size: 0.7rem;
+  color: var(--slrg-muted);
+  white-space: nowrap;
+}

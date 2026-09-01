@@ -8,6 +8,7 @@ import AgrBreakdown, {
   PlaceFiscal,
   ScenarioId,
 } from "./AgrBreakdown";
+import CoveragePanel, { CoverageLayer } from "./CoveragePanel";
 import { apiFetch, apiJson, pingApi } from "../lib/api";
 
 type ParcelFeature = GeoJSON.Feature<
@@ -343,6 +344,9 @@ export default function ScotlandMap() {
   const [metricNote, setMetricNote] = useState<string | null>(null);
   const [fiscalSummary, setFiscalSummary] = useState<FiscalSummary | null>(null);
   const [activeStory, setActiveStory] = useState<StoryId>("who_pays");
+  const [coverageLive, setCoverageLive] = useState<CoverageLayer[]>([]);
+  const [coverageGaps, setCoverageGaps] = useState<CoverageLayer[]>([]);
+  const [coverageOpen, setCoverageOpen] = useState(false);
 
   const applyResult = useCallback((payload: SquareResponse) => {
     setResult(payload);
@@ -485,6 +489,25 @@ export default function ScotlandMap() {
       cancelled = true;
     };
   }, [scenario]);
+
+  useEffect(() => {
+    let cancelled = false;
+    void apiJson<{ live: CoverageLayer[]; gaps: CoverageLayer[] }>("/platform/gaps")
+      .then((data) => {
+        if (cancelled) return;
+        setCoverageLive(data.live ?? []);
+        setCoverageGaps(data.gaps ?? []);
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setCoverageLive([]);
+          setCoverageGaps([]);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Re-assess selection when scenario changes so fiscal gross/net update
   useEffect(() => {
@@ -1263,6 +1286,26 @@ export default function ScotlandMap() {
                   Five national bodies (FLS, NatureScot, Crown Estate, Scottish
                   Water, crofting). Not council land and not a title. Zoom 6+.
                 </p>
+              )}
+              {(coverageLive.length > 0 || coverageGaps.length > 0) && (
+                <CoveragePanel
+                  live={coverageLive}
+                  gaps={coverageGaps}
+                  open={coverageOpen}
+                  onToggleOpen={() => setCoverageOpen((v) => !v)}
+                  activeLayerIds={[
+                    ...(showVdl ? ["vdl"] : []),
+                    ...(showPublicLand ? ["public_crown"] : []),
+                    ...(showBoundaries ? ["boundaries"] : []),
+                    ...(showCellGrid ? ["cell_grid"] : []),
+                  ]}
+                  onToggleLayer={(id) => {
+                    if (id === "vdl") setShowVdl((v) => !v);
+                    if (id === "public_crown") setShowPublicLand((v) => !v);
+                    if (id === "boundaries") setShowBoundaries((v) => !v);
+                    if (id === "cell_grid") setShowCellGrid((v) => !v);
+                  }}
+                />
               )}
             </div>
           </div>

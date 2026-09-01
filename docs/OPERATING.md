@@ -27,6 +27,11 @@ npm run dev
 | `GET /platform/place` | Ownership / vacant / gap card |
 | `GET /platform/gaps` | Visible register gaps |
 | `GET /downloads` | Open layer and official source index |
+| `GET /api/catalog.json` | Live / linked / gap register |
+| `GET /api/roll.json?scenario=` | 32-council AGR roll with SVDLS vacant ha |
+| `GET /api/public-land.json` | Hectares by the five published bodies |
+| `GET /api/vdl.json` | SVDLS hectares by owner class |
+| `GET /api/place.json?pc=` | Place card (vacant / public / parcel / gaps) |
 | `GET /assessment/report?format=markdown\|json` | Downloadable assessment pack |
 | `GET /validation/ward18-qa-pack` | Spatial + ratio + mini-roll for Ward 18 |
 | `GET /validation/ratio-study` | Residual vs sales-comp ratios |
@@ -42,6 +47,8 @@ npm run dev
 | W3W grid | Current map view | Zoom ≥ 12; every cell up to cap (then sampled) |
 | Vacant land | Viewport SVDLS sites | Toggle **Vacant land**; zoom ≥ 8 |
 | Public / Crown | Viewport SG 2024 holdings | Toggle **Public land**; zoom ≥ 6. Five bodies only; not a title |
+| Coverage | Live vs linked/gap | Sidebar **Coverage** list; live rows toggle overlays |
+| Vacant residual story | Council choropleth + overlay | `/?story=vacant_land` |
 | Click | Any cell | Full residual assessment + place card |
 
 Full national 3 m precompute is intentionally not stored (~billions of cells).
