@@ -124,7 +124,17 @@ input {
 }
 
 .hud-search.loading {
-  opacity: 0.72;
+  opacity: 0.85;
+}
+
+.hud-search.loading .hud-search-go {
+  animation: hud-pulse 0.9s ease-in-out infinite;
+}
+
+@keyframes hud-pulse {
+  50% {
+    opacity: 0.55;
+  }
 }
 
 .hud-close {

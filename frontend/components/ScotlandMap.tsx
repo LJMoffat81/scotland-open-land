@@ -15,7 +15,7 @@ import AgrBreakdown, {
 } from "./AgrBreakdown";
 import CoveragePanel, { CoverageLayer } from "./CoveragePanel";
 import NationalStats from "./NationalStats";
-import { apiFetch, apiJson, pingApi } from "../lib/api";
+import { ApiError, apiFetch, apiJson, pingApi } from "../lib/api";
 
 type ParcelFeature = GeoJSON.Feature<
   GeoJSON.Polygon | GeoJSON.MultiPolygon,
@@ -441,8 +441,18 @@ export default function ScotlandMap() {
         applyResult((await response.json()) as SquareResponse);
         setApiOk(true);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Unknown error");
-        setApiOk(false);
+        const message = err instanceof Error ? err.message : "Unknown error";
+        setError(
+          message.toLowerCase().includes("outside scotland")
+            ? "That point is outside Scotland. Search a Scottish postcode or click the map."
+            : message,
+        );
+        if (
+          err instanceof ApiError &&
+          (err.status == null || err.status >= 500)
+        ) {
+          setApiOk(false);
+        }
       } finally {
         setLoading(false);
       }
@@ -497,6 +507,14 @@ export default function ScotlandMap() {
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
+      const typing =
+        event.target instanceof HTMLInputElement ||
+        event.target instanceof HTMLTextAreaElement;
+      if (event.key === "/" && !typing) {
+        event.preventDefault();
+        document.getElementById("place-query")?.focus();
+        return;
+      }
       if (event.key !== "Escape") return;
       if (toolsOpen) {
         setToolsOpen(false);
@@ -534,8 +552,11 @@ export default function ScotlandMap() {
       }
       setApiOk(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unknown error");
-      setApiOk(false);
+      const message = err instanceof Error ? err.message : "Unknown error";
+      setError(message);
+      if (err instanceof ApiError && (err.status == null || err.status >= 500)) {
+        setApiOk(false);
+      }
     } finally {
       setLoading(false);
     }
@@ -1284,7 +1305,7 @@ export default function ScotlandMap() {
       <aside className="hud-card hud-tools">
         <div className="layer-panel">
               <p className="hud-tools-title">Map layers</p>
-              <label className="layer-select-label">Story for politicians</label>
+              <label className="layer-select-label">Stories</label>
               <div className="layer-chips story-chips">
                 {STORIES.map((s) => (
                   <button

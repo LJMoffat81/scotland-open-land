@@ -224,6 +224,7 @@ export default function AgrBreakdown({
   const [copied, setCopied] = useState(false);
   const [shared, setShared] = useState(false);
   const [ownershipOpen, setOwnershipOpen] = useState(false);
+  const [fiscalOpen, setFiscalOpen] = useState(false);
 
   const netRole = fiscal?.role;
   const netClass =
@@ -304,6 +305,20 @@ export default function AgrBreakdown({
 
       {fiscal && (
         <div className="fiscal-place">
+          <button
+            type="button"
+            className="ownership-heading ownership-toggle"
+            onClick={() => setFiscalOpen((v) => !v)}
+          >
+            {fiscal.role === "net_receiver"
+              ? `Net receipt ${formatGbp(Math.abs(fiscal.net_gbp), 0)}`
+              : fiscal.role === "net_contributor"
+                ? `Net contribution +${formatGbp(fiscal.net_gbp, 0)}`
+                : "Net position roughly even"}
+            <span>{fiscalOpen ? "–" : "+"}</span>
+          </button>
+          {fiscalOpen && (
+            <>
           <div className="fiscal-row">
             <span>Gross land rent</span>
             <strong>{formatGbp(fiscal.gross_plot_gbp, 0)}</strong>
@@ -332,6 +347,8 @@ export default function AgrBreakdown({
                 ? "Net contributor \u2014 higher land rent funds the state"
                 : "Roughly neutral"}
           </p>
+            </>
+          )}
         </div>
       )}
 
