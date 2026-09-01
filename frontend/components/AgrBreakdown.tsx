@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 export type ScenarioId =
   | "full_agr"
   | "replace_income_tax"
@@ -219,6 +221,7 @@ export default function AgrBreakdown({
   const place = [postcode, agr.council_name].filter(Boolean).join(" \u00b7 ");
   const w3wClean = what3words ? what3words.replace(/^\/+/, "") : null;
   const w3wParts = w3wClean ? w3wClean.split(".") : [];
+  const [copied, setCopied] = useState(false);
 
   const netRole = fiscal?.role;
   const netClass =
@@ -246,10 +249,13 @@ export default function AgrBreakdown({
             className="w3w-copy"
             title="Copy three-word address"
             onClick={() => {
-              void navigator.clipboard?.writeText(`///${w3wClean}`);
+              void navigator.clipboard?.writeText(`///${w3wClean}`).then(() => {
+                setCopied(true);
+                window.setTimeout(() => setCopied(false), 1600);
+              });
             }}
           >
-            Copy
+            {copied ? "Copied" : "Copy"}
           </button>
         </div>
       )}

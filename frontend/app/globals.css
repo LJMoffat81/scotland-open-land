@@ -81,6 +81,24 @@ input {
   box-shadow: var(--hud-shadow);
 }
 
+.hud-layers-btn {
+  flex-shrink: 0;
+  border: 0;
+  background: #fff;
+  color: var(--slrg-text);
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 0.7rem 0.95rem;
+  border-radius: 999px;
+  box-shadow: var(--hud-shadow);
+  cursor: pointer;
+}
+
+.hud-layers-btn.on {
+  background: var(--slrg-navy);
+  color: #fff;
+}
+
 .hud-search {
   display: flex;
   align-items: center;

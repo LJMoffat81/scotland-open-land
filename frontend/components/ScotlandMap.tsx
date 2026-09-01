@@ -357,12 +357,20 @@ export default function ScotlandMap() {
   const [coverageOpen, setCoverageOpen] = useState(false);
   const [band, setBand] = useState<RentBand | null>(null);
   const [statsOpen, setStatsOpen] = useState(false);
+  const [toolsOpen, setToolsOpen] = useState(false);
+  const markerRef = useRef<maplibregl.Marker | null>(null);
 
   const applyResult = useCallback((payload: SquareResponse) => {
     setResult(payload);
     setScenario(payload.agr.active_scenario);
 
     const map = mapRef.current;
+    if (map) {
+      markerRef.current?.remove();
+      markerRef.current = new maplibregl.Marker({ color: "#e11f26" })
+        .setLngLat([payload.square.lng, payload.square.lat])
+        .addTo(map);
+    }
     if (map?.getSource("selected-square")) {
       const source = map.getSource("selected-square") as GeoJSONSource;
       source.setData({
@@ -556,9 +564,9 @@ export default function ScotlandMap() {
           basemap: {
             type: "raster",
             tiles: [
-              "https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png",
-              "https://b.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png",
-              "https://c.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png",
+              "https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png",
+              "https://b.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png",
+              "https://c.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png",
             ],
             tileSize: 256,
             attribution: "© OpenStreetMap contributors © CARTO",
@@ -574,6 +582,7 @@ export default function ScotlandMap() {
       new maplibregl.NavigationControl({ showCompass: false }),
       "bottom-right",
     );
+    map.getCanvas().style.cursor = "pointer";
 
     map.on("load", () => {
       map.addSource("council-metrics", { type: "geojson", data: emptyCollection });
@@ -711,13 +720,13 @@ export default function ScotlandMap() {
         id: "selected-square-fill",
         type: "fill",
         source: "selected-square",
-        paint: { "fill-color": "#c8102e", "fill-opacity": 0.35 },
+        paint: { "fill-color": "#e11f26", "fill-opacity": 0.18 },
       });
       map.addLayer({
         id: "selected-square-outline",
         type: "line",
         source: "selected-square",
-        paint: { "line-color": "#c8102e", "line-width": 2.5 },
+        paint: { "line-color": "#e11f26", "line-width": 2.75 },
       });
 
       setMapReady(true);
@@ -771,6 +780,8 @@ export default function ScotlandMap() {
 
     mapRef.current = map;
     return () => {
+      markerRef.current?.remove();
+      markerRef.current = null;
       map.remove();
       mapRef.current = null;
       setMapReady(false);
@@ -1144,6 +1155,13 @@ export default function ScotlandMap() {
         <a className="hud-wordmark" href="/">
           Scotland Open Land
         </a>
+        <button
+          type="button"
+          className={toolsOpen ? "hud-layers-btn on" : "hud-layers-btn"}
+          onClick={() => setToolsOpen((v) => !v)}
+        >
+          Layers
+        </button>
         <div className="hud-search">
           <label className="sr-only" htmlFor="place-query">
             Postcode or What3Words
@@ -1190,6 +1208,7 @@ export default function ScotlandMap() {
         </div>
       )}
 
+      {toolsOpen && (
       <aside className="hud-card hud-tools">
         <div className="layer-panel">
               <label className="layer-select-label">Story for politicians</label>
@@ -1425,7 +1444,9 @@ export default function ScotlandMap() {
               )}
             </div>
           </aside>
+      )}
 
+          {(result || error) && (
           <aside className="hud-card hud-place">
             {error && <p className="error-line">{error}</p>}
             {!error && !result && (
@@ -1458,6 +1479,7 @@ export default function ScotlandMap() {
               />
             )}
           </aside>
+          )}
     </div>
   );
 }
