@@ -333,7 +333,7 @@ export default function ScotlandMap() {
   const [showBoundaries, setShowBoundaries] = useState(true);
   const [showCellGrid, setShowCellGrid] = useState(false);
   const [showVdl, setShowVdl] = useState(false);
-  const [showPublicLand, setShowPublicLand] = useState(false);
+  const [showPublicLand, setShowPublicLand] = useState(true);
   const [showMethod, setShowMethod] = useState(false);
   const [layerBusy, setLayerBusy] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -1282,10 +1282,33 @@ export default function ScotlandMap() {
                 </p>
               )}
               {showPublicLand && (
-                <p className="layer-meta">
-                  Five national bodies (FLS, NatureScot, Crown Estate, Scottish
-                  Water, crofting). Not council land and not a title. Zoom 6+.
-                </p>
+                <div className="public-legend">
+                  <p className="layer-meta">
+                    Not a title. Not council land. Zoom 6+.
+                  </p>
+                  <ul className="public-legend-swatches">
+                    <li>
+                      <span className="swatch" style={{ background: "#66c2a5" }} />
+                      Forestry and Land Scotland
+                    </li>
+                    <li>
+                      <span className="swatch" style={{ background: "#8da0cb" }} />
+                      NatureScot
+                    </li>
+                    <li>
+                      <span className="swatch" style={{ background: "#e78ac3" }} />
+                      Crown Estate
+                    </li>
+                    <li>
+                      <span className="swatch" style={{ background: "#a6d854" }} />
+                      Scottish Water
+                    </li>
+                    <li>
+                      <span className="swatch" style={{ background: "#fc8d62" }} />
+                      Crofting holdings
+                    </li>
+                  </ul>
+                </div>
               )}
               {(coverageLive.length > 0 || coverageGaps.length > 0) && (
                 <CoveragePanel

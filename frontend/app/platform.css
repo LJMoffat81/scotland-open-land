@@ -1,5 +1,68 @@
-.place-context {
+.place-context,
+.ownership-block {
   margin: 0.75rem 0 0.25rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid #e4eaf1;
+}
+
+.ownership-heading {
+  margin: 0 0 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 650;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--slrg-muted);
+}
+
+.ownership-rows {
+  margin: 0.35rem 0 0;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.ownership-rows > div {
+  display: grid;
+  grid-template-columns: 7.2rem 1fr;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.ownership-rows dt {
+  color: var(--slrg-muted);
+  font-weight: 600;
+}
+
+.ownership-rows dd {
+  margin: 0;
+  color: var(--slrg-text);
+}
+
+.public-legend {
+  margin-top: 0.35rem;
+}
+
+.public-legend-swatches {
+  list-style: none;
+  margin: 0.3rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.15rem;
+}
+
+.public-legend-swatches li {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+  color: var(--slrg-muted);
+}
+
+.public-legend-swatches .swatch {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 2px;
+  flex-shrink: 0;
 }
 
 .place-flags {

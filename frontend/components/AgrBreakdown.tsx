@@ -301,7 +301,8 @@ export default function AgrBreakdown({
       </div>
 
       {platform && (
-        <div className="place-context">
+        <div className="ownership-block">
+          <h3 className="ownership-heading">Who holds this land</h3>
           <div className="place-flags">
             {platform.vacant_or_derelict && (
               <span className="flag vacant">Vacant / derelict survey site</span>
@@ -317,33 +318,72 @@ export default function AgrBreakdown({
             {platform.parcel?.found === false && (
               <span className="flag gap">No INSPIRE parcel here</span>
             )}
+            {platform.filters?.public_private === "unknown" &&
+              !platform.public_or_crown?.on_this_point && (
+                <span className="flag gap">Ownership unknown here</span>
+              )}
           </div>
-          {platform.vdl?.sites && platform.vdl.sites.length > 0 && (
-            <p className="place-note">
-              {platform.vdl.sites[0].name || "SVDLS site"}
-              {platform.vdl.sites[0].site_type
-                ? ` \u00b7 ${platform.vdl.sites[0].site_type}`
-                : ""}
-              {platform.vdl.sites[0].owner_class
-                ? ` \u00b7 class ${platform.vdl.sites[0].owner_class}`
-                : ""}
-            </p>
-          )}
-          {platform.public_or_crown?.on_this_point &&
-            platform.public_or_crown.holdings &&
-            platform.public_or_crown.holdings.length > 0 && (
-              <p className="place-note">
-                {platform.public_or_crown.holdings[0].organisation ||
-                  "Public body"}
-                {platform.public_or_crown.holdings[0].site_name
-                  ? ` \u00b7 ${platform.public_or_crown.holdings[0].site_name}`
-                  : ""}
-              </p>
-            )}
+          <dl className="ownership-rows">
+            <div>
+              <dt>Cadastre</dt>
+              <dd>
+                {platform.parcel?.found
+                  ? platform.parcel.label ||
+                    platform.parcel.inspire_id ||
+                    "INSPIRE parcel (extent only)"
+                  : "No INSPIRE parcel at this point"}
+              </dd>
+            </div>
+            <div>
+              <dt>Public / Crown</dt>
+              <dd>
+                {platform.public_or_crown?.on_this_point
+                  ? [
+                      platform.public_or_crown.holdings?.[0]?.organisation,
+                      platform.public_or_crown.holdings?.[0]?.site_name,
+                    ]
+                      .filter(Boolean)
+                      .join(" \u00b7 ") || "In the five-body overlay"
+                  : "Not in the five-body overlay (not council land)"}
+              </dd>
+            </div>
+            <div>
+              <dt>Vacant / derelict</dt>
+              <dd>
+                {platform.vdl?.sites && platform.vdl.sites.length > 0
+                  ? [
+                      platform.vdl.sites[0].name || "SVDLS site",
+                      platform.vdl.sites[0].site_type,
+                    ]
+                      .filter(Boolean)
+                      .join(" \u00b7 ")
+                  : "Not on the SVDLS survey overlay"}
+              </dd>
+            </div>
+            <div>
+              <dt>Local authority</dt>
+              <dd>
+                {platform.local_authority_holding?.reason ||
+                  "National LA layer is not openly licensed"}
+              </dd>
+            </div>
+            <div>
+              <dt>Common Good</dt>
+              <dd>
+                {platform.common_good?.reason ||
+                  "No single open national spatial file"}
+              </dd>
+            </div>
+            <div>
+              <dt>Private / Sasine</dt>
+              <dd>
+                {platform.private_or_sasine?.note ||
+                  "Names stay on ScotLIS. Not invented here."}
+              </dd>
+            </div>
+          </dl>
           <p className="place-note muted">
-            {platform.public_or_crown?.on_this_point
-              ? "Five national bodies only \u2014 not council land, not a title. Confirm on ScotLIS."
-              : "Public / Crown overlay covers five national bodies only, not councils. Private names and Sasine land stay on ScotLIS."}
+            Research overlay, not a title sheet. Confirm ownership on ScotLIS.
           </p>
         </div>
       )}
