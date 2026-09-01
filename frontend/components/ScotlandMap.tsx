@@ -356,6 +356,7 @@ export default function ScotlandMap() {
   const [coverageGaps, setCoverageGaps] = useState<CoverageLayer[]>([]);
   const [coverageOpen, setCoverageOpen] = useState(false);
   const [band, setBand] = useState<RentBand | null>(null);
+  const [statsOpen, setStatsOpen] = useState(false);
 
   const applyResult = useCallback((payload: SquareResponse) => {
     setResult(payload);
@@ -569,7 +570,10 @@ export default function ScotlandMap() {
       zoom: 6.2,
     });
 
-    map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
+    map.addControl(
+      new maplibregl.NavigationControl({ showCompass: false }),
+      "bottom-right",
+    );
 
     map.on("load", () => {
       map.addSource("council-metrics", { type: "geojson", data: emptyCollection });
@@ -1129,105 +1133,65 @@ export default function ScotlandMap() {
 
   return (
     <div className="app-shell">
-      <aside className="sidebar">
-        <header className="brand brand-compact">
-          <div className="brand-row">
-            <h1>Scotland Open Land</h1>
-            <nav className="brand-nav">
-              <a href="/methodology">About</a>
-              <a href="/downloads">Downloads</a>
-              <a href="/open-api">API</a>
-              <a href="https://www.slrg.scot" target="_blank" rel="noreferrer">
-                SLRG
-              </a>
-            </nav>
-          </div>
-        </header>
-
-        {apiOk === false && (
-          <div className="api-banner api-banner-bad">
-            <span>API offline — start backend on port 8000</span>
-            <button
-              type="button"
-              className="api-retry"
-              onClick={() => void pingApi().then((s) => setApiOk(s.ok))}
-            >
-              Retry
-            </button>
-          </div>
+      <div className="map-wrap">
+        <div id="map" ref={mapContainer} />
+        {!result && apiOk !== false && (
+          <div className="map-hint">Click any square for a place</div>
         )}
+      </div>
 
-        {fiscalSummary?.enabled && (
-          <div
-            className={`fiscal-dash ${
-              fiscalSummary.revenue_neutral_or_better ? "surplus" : "shortfall"
-            }`}
+      <header className="hud-top">
+        <a className="hud-wordmark" href="/">
+          Scotland Open Land
+        </a>
+        <div className="hud-search">
+          <label className="sr-only" htmlFor="place-query">
+            Postcode or What3Words
+          </label>
+          <input
+            id="place-query"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") void runSearch();
+            }}
+            placeholder="Search postcode or /// three.word.address"
+            disabled={loading || apiOk === false}
+          />
+          <button
+            type="button"
+            className="hud-search-go"
+            disabled={loading || apiOk === false || !query.trim()}
+            onClick={() => void runSearch()}
           >
-            <div className="fiscal-dash-title">Scotland fiscal picture</div>
-            <div className="fiscal-dash-grid">
-              <div>
-                <span className="fd-label">Taxes to replace</span>
-                <span className="fd-value">
-                  {formatBn(fiscalSummary.basket.total_gbp)}
-                </span>
-              </div>
-              <div>
-                <span className="fd-label">AGR collection</span>
-                <span className="fd-value">
-                  {formatBn(fiscalSummary.collection.annual_gbp)}
-                </span>
-              </div>
-              <div>
-                <span className="fd-label">
-                  {fiscalSummary.surplus_gbp >= 0 ? "Surplus" : "Shortfall"}
-                </span>
-                <span className="fd-value">
-                  {formatBn(Math.abs(fiscalSummary.surplus_gbp))}
-                </span>
-              </div>
-            </div>
-            <p className="fiscal-dash-note">
-              {fiscalSummary.revenue_neutral_or_better
-                ? "Revenue neutral or better under this scenario"
-                : "Short of the tax basket under this scenario"}
-              {" · "}
-              Dividend {formatGbp0(fiscalSummary.dividend.per_person_gbp)}/person
-              {fiscalSummary.remote_credit.enabled
-                ? ` · Remote credit +${formatGbp0(fiscalSummary.remote_credit.credit_gbp_per_person_year)}`
-                : ""}
-            </p>
-          </div>
-        )}
+            {loading ? "…" : "Search"}
+          </button>
+        </div>
+        <nav className="hud-nav">
+          <a href="/methodology">About</a>
+          <a href="/downloads">Downloads</a>
+          <a href="/open-api">API</a>
+          <a href="https://www.slrg.scot" target="_blank" rel="noreferrer">
+            SLRG
+          </a>
+        </nav>
+      </header>
 
-        <NationalStats />
+      {apiOk === false && (
+        <div className="hud-banner">
+          <span>API offline — start backend on port 8000</span>
+          <button
+            type="button"
+            className="api-retry"
+            onClick={() => void pingApi().then((s) => setApiOk(s.ok))}
+          >
+            Retry
+          </button>
+        </div>
+      )}
 
-        <div className="sidebar-scroll">
-          <div className="search-block">
-            <label className="sr-only" htmlFor="place-query">
-              Postcode or What3Words
-            </label>
-            <div className="search-row">
-              <input
-                id="place-query"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") void runSearch();
-                }}
-                placeholder="Postcode or word.word.word"
-                disabled={loading || apiOk === false}
-              />
-              <button
-                type="button"
-                className="primary"
-                disabled={loading || apiOk === false || !query.trim()}
-                onClick={() => void runSearch()}
-              >
-                {loading ? "…" : "Go"}
-              </button>
-            </div>
-
-            <div className="layer-panel">
+      <aside className="hud-card hud-tools">
+        <div className="layer-panel">
               <label className="layer-select-label">Story for politicians</label>
               <div className="layer-chips story-chips">
                 {STORIES.map((s) => (
@@ -1400,15 +1364,74 @@ export default function ScotlandMap() {
                   }}
                 />
               )}
-            </div>
-          </div>
 
-          <div className="result-block">
+              <button
+                type="button"
+                className="hud-fold"
+                onClick={() => setStatsOpen((v) => !v)}
+              >
+                {statsOpen ? "Hide national figures" : "Scotland figures"}
+              </button>
+              {statsOpen && (
+                <div className="hud-stats">
+                  {fiscalSummary?.enabled && (
+                    <div
+                      className={`fiscal-dash ${
+                        fiscalSummary.revenue_neutral_or_better
+                          ? "surplus"
+                          : "shortfall"
+                      }`}
+                    >
+                      <div className="fiscal-dash-title">
+                        Scotland fiscal picture
+                      </div>
+                      <div className="fiscal-dash-grid">
+                        <div>
+                          <span className="fd-label">Taxes to replace</span>
+                          <span className="fd-value">
+                            {formatBn(fiscalSummary.basket.total_gbp)}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="fd-label">AGR collection</span>
+                          <span className="fd-value">
+                            {formatBn(fiscalSummary.collection.annual_gbp)}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="fd-label">
+                            {fiscalSummary.surplus_gbp >= 0
+                              ? "Surplus"
+                              : "Shortfall"}
+                          </span>
+                          <span className="fd-value">
+                            {formatBn(Math.abs(fiscalSummary.surplus_gbp))}
+                          </span>
+                        </div>
+                      </div>
+                      <p className="fiscal-dash-note">
+                        {fiscalSummary.revenue_neutral_or_better
+                          ? "Revenue neutral or better under this scenario"
+                          : "Short of the tax basket under this scenario"}
+                        {" · "}
+                        Dividend{" "}
+                        {formatGbp0(fiscalSummary.dividend.per_person_gbp)}
+                        /person
+                      </p>
+                    </div>
+                  )}
+                  <NationalStats />
+                </div>
+              )}
+            </div>
+          </aside>
+
+          <aside className="hud-card hud-place">
             {error && <p className="error-line">{error}</p>}
             {!error && !result && (
               <p className="idle-hint">
-                Click the map: high land-rent places fund the state; remote and
-                low-rent places can be net receivers after dividend.
+                Search or click the map. High-rent places fund the state; remote
+                and low-rent places can be net receivers after dividend.
               </p>
             )}
             {result && (
@@ -1421,9 +1444,12 @@ export default function ScotlandMap() {
                 lat={result.square.lat}
                 lng={result.square.lng}
                 what3words={result.what3words}
-                parcelLabel={result.parcel?.properties?.label ?? result.agr.parcel_id}
+                parcelLabel={
+                  result.parcel?.properties?.label ?? result.agr.parcel_id
+                }
                 parcelAreaSqm={
-                  result.parcel?.properties?.area_sqm ?? result.agr.parcel_area_sqm
+                  result.parcel?.properties?.area_sqm ??
+                  result.agr.parcel_area_sqm
                 }
                 fiscal={result.fiscal}
                 platform={result.platform}
@@ -1431,16 +1457,7 @@ export default function ScotlandMap() {
                 reportDownloading={reportDownloading}
               />
             )}
-          </div>
-        </div>
-      </aside>
-
-      <div className="map-wrap">
-        <div id="map" ref={mapContainer} />
-        {!result && apiOk !== false && (
-          <div className="map-hint">Click any place for an estimate</div>
-        )}
-      </div>
+          </aside>
     </div>
   );
 }

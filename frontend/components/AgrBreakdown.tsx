@@ -217,9 +217,8 @@ export default function AgrBreakdown({
     !headlineIsParcel && plotFull != null && plotFull > 0 && !fiscal;
 
   const place = [postcode, agr.council_name].filter(Boolean).join(" \u00b7 ");
-  const w3wDisplay = what3words
-    ? `///${what3words.replace(/^\/+/, "")}`
-    : null;
+  const w3wClean = what3words ? what3words.replace(/^\/+/, "") : null;
+  const w3wParts = w3wClean ? w3wClean.split(".") : [];
 
   const netRole = fiscal?.role;
   const netClass =
@@ -231,11 +230,33 @@ export default function AgrBreakdown({
 
   return (
     <div className="clarity-result">
+      {w3wParts.length === 3 && (
+        <div className="w3w-hero-row">
+          <p className="w3w-hero" aria-label={`what3words ${w3wClean}`}>
+            <span className="w3w-slash">{"///"}</span>
+            {w3wParts.map((word, i) => (
+              <span key={word + i}>
+                {i > 0 && <span className="w3w-dot">.</span>}
+                <span className="w3w-word">{word}</span>
+              </span>
+            ))}
+          </p>
+          <button
+            type="button"
+            className="w3w-copy"
+            title="Copy three-word address"
+            onClick={() => {
+              void navigator.clipboard?.writeText(`///${w3wClean}`);
+            }}
+          >
+            Copy
+          </button>
+        </div>
+      )}
+
       <p className="location-line">
         {place || `${lat.toFixed(5)}, ${lng.toFixed(5)}`}
       </p>
-
-      {w3wDisplay && <p className="w3w-address">{w3wDisplay}</p>}
 
       <div className="agr-value" aria-live="polite">
         {formatGbp(headline, headline >= 100 ? 0 : 2)}
