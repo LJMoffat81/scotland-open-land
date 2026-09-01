@@ -123,6 +123,33 @@ input {
   outline: none;
 }
 
+.hud-search.loading {
+  opacity: 0.72;
+}
+
+.hud-close {
+  position: absolute;
+  top: 0.7rem;
+  right: 0.7rem;
+  width: 1.85rem;
+  height: 1.85rem;
+  border: 0;
+  border-radius: 999px;
+  background: #f3f5f7;
+  color: var(--slrg-muted);
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.hud-place {
+  right: 1.1rem;
+  top: 5.25rem;
+  width: min(360px, calc(100vw - 2rem));
+  max-height: calc(100vh - 6.5rem);
+  padding: 2.1rem 1.15rem 1.2rem;
+}
+
 .hud-search-go {
   flex-shrink: 0;
   border: 0;
@@ -204,7 +231,7 @@ input {
   top: 5.25rem;
   width: min(360px, calc(100vw - 2rem));
   max-height: calc(100vh - 6.5rem);
-  padding: 1.1rem 1.15rem 1.2rem;
+  padding: 2.1rem 1.15rem 1.2rem;
 }
 
 .hud-fold {

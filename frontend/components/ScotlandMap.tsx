@@ -450,6 +450,64 @@ export default function ScotlandMap() {
     [applyResult, scenario],
   );
 
+  const clearPlace = useCallback(() => {
+    setResult(null);
+    setError(null);
+    markerRef.current?.remove();
+    markerRef.current = null;
+    const map = mapRef.current;
+    if (map?.getSource("selected-square")) {
+      (map.getSource("selected-square") as GeoJSONSource).setData(
+        emptyCollection,
+      );
+    }
+    if (map?.getSource("selected-parcel")) {
+      (map.getSource("selected-parcel") as GeoJSONSource).setData(
+        emptyCollection,
+      );
+    }
+    if (typeof window !== "undefined") {
+      const url = new URL(window.location.href);
+      url.searchParams.delete("lat");
+      url.searchParams.delete("lng");
+      url.searchParams.delete("words");
+      window.history.replaceState({}, "", url.toString());
+    }
+  }, []);
+
+  const locateMe = useCallback(() => {
+    if (!navigator.geolocation) {
+      setError("This browser cannot share a location.");
+      return;
+    }
+    setLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        void fetchSquare(pos.coords.latitude, pos.coords.longitude);
+      },
+      () => {
+        setLoading(false);
+        setError(
+          "Location unavailable. Allow location access, or search a postcode.",
+        );
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 30000 },
+    );
+  }, [fetchSquare]);
+
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      if (toolsOpen) {
+        setToolsOpen(false);
+        return;
+      }
+      if (result || error) clearPlace();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [toolsOpen, result, error, clearPlace]);
+
   const runSearch = async () => {
     const q = query.trim();
     if (!q) return;
@@ -1167,7 +1225,15 @@ export default function ScotlandMap() {
         >
           Layers
         </button>
-        <div className="hud-search">
+        <button
+          type="button"
+          className="hud-layers-btn"
+          title="Use my location"
+          onClick={() => locateMe()}
+        >
+          Locate
+        </button>
+        <div className={loading ? "hud-search loading" : "hud-search"}>
           <label className="sr-only" htmlFor="place-query">
             Postcode or What3Words
           </label>
@@ -1455,6 +1521,14 @@ export default function ScotlandMap() {
 
           {(result || error) && (
           <aside className="hud-card hud-place">
+            <button
+              type="button"
+              className="hud-close"
+              title="Close place (Esc)"
+              onClick={() => clearPlace()}
+            >
+              ×
+            </button>
             {error && <p className="error-line">{error}</p>}
             {!error && !result && (
               <p className="idle-hint">
