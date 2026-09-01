@@ -33,7 +33,9 @@ national:
 councils:
   S12000005:
     name: Clackmannanshire
-    planning: {scope: national}
+    planning:
+      scope: council
+      url: https://www.clacks.gov.uk/property/planningpermission/
   S12000006:
     name: Dumfries and Galloway
     planning:
@@ -69,13 +71,19 @@ councils:
       url: https://www.highland.gov.uk/planning/view-comment-planning-applications
   S12000018:
     name: Inverclyde
-    planning: {scope: national}
+    planning:
+      scope: council
+      url: https://www.inverclyde.gov.uk/planning-and-the-environment/planning-applications/how-to-view-planning-applications
   S12000019:
     name: Midlothian
-    planning: {scope: national}
+    planning:
+      scope: council
+      url: https://www.midlothian.gov.uk/info/200167/planning_applications/34/search_and_comment_on_planning_applications
   S12000020:
     name: Moray
-    planning: {scope: national}
+    planning:
+      scope: council
+      url: https://www.moray.gov.uk/planning-and-building-standards/planning-applications/
   S12000021:
     name: North Ayrshire
     planning:
@@ -132,16 +140,24 @@ councils:
     planning: {scope: national}
   S12000039:
     name: West Dunbartonshire
-    planning: {scope: national}
+    planning:
+      scope: council
+      url: https://www.west-dunbarton.gov.uk/planning-building-standards/planning-applications
   S12000040:
     name: West Lothian
-    planning: {scope: national}
+    planning:
+      scope: council
+      url: https://www.westlothian.gov.uk/planning-applications
   S12000041:
     name: Angus
-    planning: {scope: national}
+    planning:
+      scope: council
+      url: https://www.angus.gov.uk/planning_and_building
   S12000042:
     name: City of Dundee
-    planning: {scope: national}
+    planning:
+      scope: council
+      url: https://www.dundeecity.gov.uk/service-area/city-development/planning-and-economic-development
   S12000045:
     name: East Dunbartonshire
     planning:

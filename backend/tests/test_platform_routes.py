@@ -10,6 +10,8 @@ def test_platform_router_exposes_open_layer_paths():
     assert "/api/roll.json" in paths
     assert "/api/catalog.json" in paths
     assert "/api/public-land.json" in paths
+    assert "/api/place.json" in paths
+    assert "/api/registers.json" in paths
     assert "/platform/place" in paths
     assert "/platform/gaps" in paths
     assert "/downloads" in paths

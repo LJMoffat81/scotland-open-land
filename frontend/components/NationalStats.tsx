@@ -71,6 +71,8 @@ export default function NationalStats() {
         <a href="/api/roll.json">AGR roll</a>
         {" · "}
         <a href="/downloads">Downloads</a>
+        {" · "}
+        <a href="/open-api">API</a>
       </p>
     </div>
   );

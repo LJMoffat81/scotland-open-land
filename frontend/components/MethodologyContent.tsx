@@ -110,6 +110,8 @@ export default function MethodologyContent() {
         <a href="/">Map</a>
         {" · "}
         <a href="/downloads">Downloads</a>
+        {" · "}
+        <a href="/open-api">Public API</a>
       </p>
       <h1>Methodology</h1>
       <p>
@@ -391,8 +393,10 @@ square_share = economic_rent_of_square ÷ equal_share_per_person`}
             HPI house prices, AGR as % of price, land share, site capital), SIMD 2020
             deprivation shares, population density, rural valuation-method outlines,
             viewport W3W cell AGR, SVDLS vacant land, and the SG public / Crown
-            Estate overlay (five national bodies; not a title) — open or residual-derived
-            only (no portal scrape, no owners or sale prices on the parcel fabric).
+            Estate overlay (five national bodies; not a title). Coverage, vacant /
+            public / rent-band filters, and verified council planning links sit
+            beside AGR. Open or residual-derived only (no portal scrape, no owners
+            or sale prices on the parcel fabric).
           </li>
           <li>
             Glasgow Ward 18 (East Centre) validation case study — toggle on the map

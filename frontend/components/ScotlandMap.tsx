@@ -1136,6 +1136,7 @@ export default function ScotlandMap() {
             <nav className="brand-nav">
               <a href="/methodology">About</a>
               <a href="/downloads">Downloads</a>
+              <a href="/open-api">API</a>
               <a href="https://www.slrg.scot" target="_blank" rel="noreferrer">
                 SLRG
               </a>

@@ -207,7 +207,8 @@ $env:NEXT_PUBLIC_API_URL="http://127.0.0.1:8000"
 npm run dev
 ```
 
-App: http://localhost:3000
+App: http://localhost:3000  
+Open data: http://localhost:3000/downloads · http://localhost:3000/open-api
 
 ## Project structure
 

@@ -39,6 +39,8 @@ export default function DownloadsPage() {
       <p className="downloads-nav">
         <a href="/">Map</a>
         {" · "}
+        <a href="/open-api">Public API</a>
+        {" · "}
         <a href="/methodology">About</a>
       </p>
       <h1>Open downloads</h1>
@@ -64,6 +66,12 @@ export default function DownloadsPage() {
             <a href={item.href}>{item.label}</a>
           </li>
         ))}
+        <li>
+          <a href={`${getApiBaseUrl()}/layers/councils?scenario=full_agr`}>
+            Council AGR GeoJSON
+          </a>
+          {" — research estimate + OGL inputs; not a title layer"}
+        </li>
       </ul>
 
       <h2>Official sources</h2>

@@ -15,6 +15,15 @@ def test_edinburgh_has_council_planning_url():
     assert "edinburgh.gov.uk" in card["planning"]["url"]
 
 
+def test_clacks_and_moray_verified():
+    clacks = registers_for_council("S12000005")
+    moray = registers_for_council("S12000020")
+    assert clacks is not None and clacks["planning"]["scope"] == "council"
+    assert "clacks.gov.uk" in clacks["planning"]["url"]
+    assert moray is not None and moray["planning"]["scope"] == "council"
+    assert "moray.gov.uk" in moray["planning"]["url"]
+
+
 def test_aberdeenshire_and_north_lanarkshire_verified():
     ab = registers_for_council("S12000034")
     nl = registers_for_council("S12000050")
@@ -24,8 +33,8 @@ def test_aberdeenshire_and_north_lanarkshire_verified():
     assert "northlanarkshire.gov.uk" in nl["planning"]["url"]
 
 
-def test_unknown_council_falls_back_to_national_eplanning():
-    card = registers_for_council("S12000005")
+def test_glasgow_falls_back_to_national_eplanning():
+    card = registers_for_council("S12000049")
     assert card is not None
     assert card["planning"]["scope"] == "national"
     assert "eplanning.scot" in card["planning"]["url"]
@@ -44,5 +53,5 @@ def test_registers_payload_counts():
     body = registers_payload()
     assert body["ok"] is True
     assert body["council_count"] == 32
-    assert body["council_specific_planning"] == 19
+    assert body["council_specific_planning"] == 27
     assert body["national"]["scotlis"]["url"].startswith("https://scotlis.ros.gov.uk")
