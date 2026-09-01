@@ -2,9 +2,19 @@
 
 from __future__ import annotations
 
-from fastapi import APIRouter, HTTPException, Query
-from fastapi.responses import JSONResponse
+import csv
+import io
 
+from fastapi import APIRouter, HTTPException, Query
+from fastapi.responses import JSONResponse, PlainTextResponse
+
+from layers.open_stats import (
+    catalog_json,
+    public_land_json,
+    roll_json,
+    vdl_councils_json,
+    vdl_json,
+)
 from layers.platform import place_context, platform_catalog
 from layers.public_land import query_bbox as public_land_bbox
 from layers.vdl import query_bbox as vdl_bbox
@@ -65,6 +75,94 @@ def platform_gaps() -> dict:
         "gaps": [layer for layer in catalog["layers"] if layer["status"] in ("gap", "linked")],
         "live": [layer for layer in catalog["layers"] if layer["status"] == "live"],
         "policy": catalog["data_policy"],
+    }
+
+
+@router.get("/api/catalog.json")
+def api_catalog() -> dict:
+    return catalog_json()
+
+
+@router.get("/api/public-land.json")
+def api_public_land() -> dict:
+    return public_land_json()
+
+
+@router.get("/api/vdl.json")
+def api_vdl() -> dict:
+    return vdl_json()
+
+
+@router.get("/api/vdl-councils.json")
+def api_vdl_councils(
+    scenario: str = Query(default="full_agr"),
+) -> dict:
+    return vdl_councils_json(scenario)
+
+
+@router.get("/api/roll.json")
+def api_roll(scenario: str = Query(default="full_agr")) -> dict:
+    return roll_json(scenario)
+
+
+@router.get("/api/roll.csv")
+def api_roll_csv(scenario: str = Query(default="full_agr")) -> PlainTextResponse:
+    payload = roll_json(scenario)
+    rows = payload.get("councils") or []
+    if not rows:
+        return PlainTextResponse("", media_type="text/csv")
+    fields = list(rows[0].keys())
+    buf = io.StringIO()
+    writer = csv.DictWriter(buf, fieldnames=fields, extrasaction="ignore")
+    writer.writeheader()
+    writer.writerows(rows)
+    return PlainTextResponse(buf.getvalue(), media_type="text/csv")
+
+
+@router.get("/api/place.json")
+def api_place(
+    pc: str | None = Query(default=None),
+    lat: float | None = Query(default=None),
+    lng: float | None = Query(default=None),
+) -> dict:
+    """Place card: vacant / public / parcel / gaps. AGR stays on /square."""
+    if pc:
+        import httpx
+
+        from api.main import _load_postcode_api_url
+
+        normalised = pc.replace(" ", "").upper()
+        api_url = _load_postcode_api_url()
+        try:
+            with httpx.Client(timeout=10.0) as client:
+                response = client.get(f"{api_url}/{normalised}")
+        except httpx.HTTPError as exc:
+            raise HTTPException(status_code=502, detail=f"Postcode lookup failed: {exc}") from exc
+        if response.status_code != 200:
+            raise HTTPException(status_code=404, detail="Postcode not found.")
+        result = (response.json() or {}).get("result") or {}
+        lat = float(result["latitude"])
+        lng = float(result["longitude"])
+        pc = result.get("postcode") or pc
+    if lat is None or lng is None:
+        raise HTTPException(status_code=400, detail="Provide pc= or lat= and lng=.")
+    _scotland_bounds_check(lat, lng)
+    card = place_context(lat, lng, postcode=pc)
+    card["postcode"] = pc
+    return card
+
+
+@router.get("/api/registers.json")
+def api_registers() -> dict:
+    catalog = platform_catalog()
+    return {
+        "ok": True,
+        "note": (
+            "Official source URLs for live, linked and gap layers. "
+            "Per-council planning pages are not stored as a bulk file here yet."
+        ),
+        "layers": catalog["layers"],
+        "data_policy": catalog["data_policy"],
     }
 
 

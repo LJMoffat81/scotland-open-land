@@ -63,7 +63,8 @@ type MetricId =
   | "simd"
   | "pop_density"
   | "net_contribution"
-  | "gross_liability";
+  | "gross_liability"
+  | "vacant_residual";
 
 type MetricDef = {
   id: MetricId;
@@ -73,7 +74,13 @@ type MetricDef = {
   stops: [number, string][];
 };
 
-type StoryId = "who_pays" | "net_position" | "rent_intensity" | "equity" | "prices";
+type StoryId =
+  | "who_pays"
+  | "net_position"
+  | "rent_intensity"
+  | "equity"
+  | "prices"
+  | "vacant_land";
 
 const emptyCollection: GeoJSON.FeatureCollection = {
   type: "FeatureCollection",
@@ -214,6 +221,19 @@ const METRICS: MetricDef[] = [
       [6000, "#b35806"],
     ],
   },
+  {
+    id: "vacant_residual",
+    property: "vacant_full_agr_gbp",
+    label: "Vacant land residual",
+    group: "context",
+    stops: [
+      [0, "#fff5eb"],
+      [2_000_000, "#fdd0a2"],
+      [8_000_000, "#fd8d3c"],
+      [20_000_000, "#e6550d"],
+      [40_000_000, "#a63603"],
+    ],
+  },
 ];
 
 const STORIES: Array<{ id: StoryId; label: string; metric: MetricId; blurb: string }> = [
@@ -246,6 +266,12 @@ const STORIES: Array<{ id: StoryId; label: string; metric: MetricId; blurb: stri
     label: "Deprivation",
     metric: "simd",
     blurb: "SIMD context alongside land rent",
+  },
+  {
+    id: "vacant_land",
+    label: "Vacant land",
+    metric: "vacant_residual",
+    blurb: "Illustrative residual on SVDLS hectares — not a bill",
   },
 ];
 
@@ -472,6 +498,18 @@ export default function ScotlandMap() {
     if (!story) return;
     setActiveStory(storyId);
     setChoropleth(story.metric);
+    if (storyId === "vacant_land") {
+      setShowVdl(true);
+    }
+    if (typeof window !== "undefined") {
+      const url = new URL(window.location.href);
+      if (storyId === "vacant_land") {
+        url.searchParams.set("story", "vacant_land");
+      } else {
+        url.searchParams.delete("story");
+      }
+      window.history.replaceState({}, "", url.toString());
+    }
   };
 
   useEffect(() => {
@@ -652,6 +690,12 @@ export default function ScotlandMap() {
       const qWords = params.get("words");
       const qLat = params.get("lat");
       const qLng = params.get("lng");
+      const qStory = params.get("story");
+      if (qStory === "vacant_land") {
+        setActiveStory("vacant_land");
+        setChoropleth("vacant_residual");
+        setShowVdl(true);
+      }
       if (qWords) {
         setQuery(qWords);
         void (async () => {

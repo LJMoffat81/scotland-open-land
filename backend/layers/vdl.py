@@ -33,6 +33,40 @@ def _client() -> httpx.Client:
     return httpx.Client(timeout=TIMEOUT)
 
 
+def by_council_hectares() -> dict[str, dict[str, Any]]:
+    """SVDLS hectares and site counts keyed by local-authority S-code."""
+    params = {
+        "where": "1=1",
+        "groupByFieldsForStatistics": "la_s_code",
+        "outStatistics": (
+            '[{"statisticType":"count","onStatisticField":"FID",'
+            '"outStatisticFieldName":"n"},'
+            '{"statisticType":"sum","onStatisticField":"Shape__Area",'
+            '"outStatisticFieldName":"sqm"}]'
+        ),
+        "f": "json",
+    }
+    try:
+        with _client() as client:
+            response = client.get(FEATURE_URL, params=params)
+            response.raise_for_status()
+            payload = response.json()
+    except (httpx.HTTPError, ValueError):
+        return {}
+    by_code: dict[str, dict[str, Any]] = {}
+    for feat in payload.get("features") or []:
+        attrs = feat.get("attributes") or {}
+        code = attrs.get("la_s_code")
+        if not code:
+            continue
+        ha = float(attrs.get("sqm") or 0) / 10_000.0
+        by_code[str(code)] = {
+            "vacantHa": round(ha, 2),
+            "vacantSites": int(attrs.get("n") or 0),
+        }
+    return by_code
+
+
 def query_point(lat: float, lng: float) -> dict[str, Any]:
     """Sites whose polygon contains the clicked point."""
     params = {

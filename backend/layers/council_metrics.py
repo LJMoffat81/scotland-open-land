@@ -19,6 +19,7 @@ from shapely.ops import transform
 
 from agr.fiscal import place_fiscal
 from agr.service import ValuationService
+from layers.vdl import by_council_hectares
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 BOUNDARIES = REPO_ROOT / "data" / "processed" / "scotland_councils.geojson"
@@ -99,6 +100,16 @@ METRIC_DEFS: dict[str, dict[str, Any]] = {
         "group": "fiscal",
         "description": "Gross plot AGR under active scenario — highest-rent places pay most.",
     },
+    "vacant_residual": {
+        "property": "vacant_full_agr_gbp",
+        "label": "Vacant land residual",
+        "unit": "£/year on SVDLS ha",
+        "group": "context",
+        "description": (
+            "Illustrative full AGR on SVDLS vacant/derelict hectares. "
+            "Survey polygons, not a bill."
+        ),
+    },
 }
 
 
@@ -129,6 +140,7 @@ def build_council_metrics_geojson(scenario: str = "full_agr") -> dict[str, Any]:
         geo = json.load(handle)
 
     context = _load_context()
+    vacant = by_council_hectares()
     service = ValuationService.default()
     features_out: list[dict[str, Any]] = []
 
@@ -176,6 +188,12 @@ def build_council_metrics_geojson(scenario: str = "full_agr") -> dict[str, Any]:
         )
 
         ctx = context.get(str(code)) or {}
+        vdl = vacant.get(str(code)) or {"vacantHa": 0.0, "vacantSites": 0}
+        vacant_ha = float(vdl["vacantHa"])
+        vacant_agr = round(
+            vacant_ha * 10_000.0 * float(breakdown.site_rental_per_sqm_gbp or 0),
+            0,
+        )
         population = ctx.get("population")
         simd = ctx.get("simd_pct_20most_deprived")
         density = None
@@ -193,6 +211,9 @@ def build_council_metrics_geojson(scenario: str = "full_agr") -> dict[str, Any]:
                     "method": breakdown.method,
                     "rural": breakdown.method == "productive_land_use",
                     "confidence": breakdown.confidence,
+                    "vacantHa": vacant_ha,
+                    "vacantSites": vdl["vacantSites"],
+                    "vacant_full_agr_gbp": vacant_agr,
                     # Value metrics
                     "annual_ground_rent_cell_gbp": breakdown.annual_ground_rent_gbp,
                     "annual_ground_rent_plot_gbp": plot,
