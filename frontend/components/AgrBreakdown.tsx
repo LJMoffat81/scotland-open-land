@@ -222,6 +222,8 @@ export default function AgrBreakdown({
   const w3wClean = what3words ? what3words.replace(/^\/+/, "") : null;
   const w3wParts = w3wClean ? w3wClean.split(".") : [];
   const [copied, setCopied] = useState(false);
+  const [shared, setShared] = useState(false);
+  const [ownershipOpen, setOwnershipOpen] = useState(false);
 
   const netRole = fiscal?.role;
   const netClass =
@@ -244,19 +246,36 @@ export default function AgrBreakdown({
               </span>
             ))}
           </p>
-          <button
-            type="button"
-            className="w3w-copy"
-            title="Copy three-word address"
-            onClick={() => {
-              void navigator.clipboard?.writeText(`///${w3wClean}`).then(() => {
-                setCopied(true);
-                window.setTimeout(() => setCopied(false), 1600);
-              });
-            }}
-          >
-            {copied ? "Copied" : "Copy"}
-          </button>
+          <div className="w3w-actions">
+            <button
+              type="button"
+              className="w3w-copy"
+              title="Copy three-word address"
+              onClick={() => {
+                void navigator.clipboard?.writeText(`///${w3wClean}`).then(() => {
+                  setCopied(true);
+                  window.setTimeout(() => setCopied(false), 1600);
+                });
+              }}
+            >
+              {copied ? "Copied" : "Copy"}
+            </button>
+            <button
+              type="button"
+              className="w3w-copy"
+              title="Copy a link to this place"
+              onClick={() => {
+                void navigator.clipboard?.writeText(window.location.href).then(
+                  () => {
+                    setShared(true);
+                    window.setTimeout(() => setShared(false), 1600);
+                  },
+                );
+              }}
+            >
+              {shared ? "Link copied" : "Share"}
+            </button>
+          </div>
         </div>
       )}
 
@@ -336,7 +355,16 @@ export default function AgrBreakdown({
 
       {platform && (
         <div className="ownership-block">
-          <h3 className="ownership-heading">Who holds this land</h3>
+          <button
+            type="button"
+            className="ownership-heading ownership-toggle"
+            onClick={() => setOwnershipOpen((v) => !v)}
+          >
+            Who holds this land
+            <span>{ownershipOpen ? "–" : "+"}</span>
+          </button>
+          {ownershipOpen && (
+            <>
           <div className="place-flags">
             {platform.vacant_or_derelict && (
               <span className="flag vacant">Vacant / derelict survey site</span>
@@ -458,6 +486,8 @@ export default function AgrBreakdown({
           <p className="place-note muted">
             Research overlay, not a title sheet. Confirm ownership on ScotLIS.
           </p>
+            </>
+          )}
         </div>
       )}
 

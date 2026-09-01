@@ -397,13 +397,18 @@ export default function ScotlandMap() {
       }
     }
 
+    if (payload.what3words) {
+      setQuery(`///${payload.what3words.replace(/^\/+/, "")}`);
+    }
+
     if (map) {
       const z = map.getZoom();
       const targetZoom = payload.parcel
-        ? Math.max(z < 6.5 ? 15 : z, 15)
+        ? Math.max(z < 6.5 ? 16 : z, 16)
         : z < 6.5
           ? 7
-          : Math.min(z, 12);
+          : Math.min(Math.max(z, 15), 18);
+      if (targetZoom >= 14) setShowCellGrid(true);
       map.flyTo({
         center: [payload.square.lng, payload.square.lat],
         zoom: Math.min(targetZoom, 18),
@@ -1168,6 +1173,7 @@ export default function ScotlandMap() {
           </label>
           <input
             id="place-query"
+            autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => {
@@ -1211,6 +1217,7 @@ export default function ScotlandMap() {
       {toolsOpen && (
       <aside className="hud-card hud-tools">
         <div className="layer-panel">
+              <p className="hud-tools-title">Map layers</p>
               <label className="layer-select-label">Story for politicians</label>
               <div className="layer-chips story-chips">
                 {STORIES.map((s) => (

@@ -539,6 +539,12 @@ button.primary:disabled {
   font-weight: 700;
 }
 
+.w3w-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
 .w3w-copy {
   flex-shrink: 0;
   border: 0;
@@ -549,6 +555,25 @@ button.primary:disabled {
   padding: 0.35rem 0.55rem;
   border-radius: 999px;
   cursor: pointer;
+}
+
+.hud-tools-title {
+  margin: 0 0 0.65rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.ownership-toggle {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
 }
 
 .w3w-address {
