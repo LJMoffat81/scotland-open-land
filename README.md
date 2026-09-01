@@ -177,6 +177,13 @@ Docs: http://127.0.0.1:8000/docs
 | `GET /layers/w3w-grid?south&west&north&east` | Viewport W3W cells with AGR (capped) |
 | `GET /layers/open/vdl?south&west&north&east` | Viewport vacant/derelict land (SVDLS, OGL) |
 | `GET /layers/open/public-land?south&west&north&east` | Viewport public / Crown land (SG 2024, five bodies) |
+| `GET /api/catalog.json` | Live / linked / gap register |
+| `GET /api/roll.json` | 32-council AGR roll + SVDLS vacant ha |
+| `GET /api/public-land.json` | Hectares by the five published bodies |
+| `GET /api/vdl.json` | SVDLS hectares by owner class |
+| `GET /api/registers.json` | Official planning / CAT / ScotLIS landing pages |
+| `GET /api/place.json?pc=` | Place card (vacant / public / parcel / gaps) |
+| `GET /downloads` | Index of open stats and official source links |
 
 Ops: [docs/OPERATING.md](docs/OPERATING.md) · `.\scripts\run_professional_local.ps1`
 

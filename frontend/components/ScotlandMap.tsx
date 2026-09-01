@@ -1,7 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import maplibregl, { Map, GeoJSONSource, ExpressionSpecification } from "maplibre-gl";
+import maplibregl, {
+  Map,
+  GeoJSONSource,
+  ExpressionSpecification,
+  FilterSpecification,
+} from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import AgrBreakdown, {
   AgrResult,
@@ -9,6 +14,7 @@ import AgrBreakdown, {
   ScenarioId,
 } from "./AgrBreakdown";
 import CoveragePanel, { CoverageLayer } from "./CoveragePanel";
+import NationalStats from "./NationalStats";
 import { apiFetch, apiJson, pingApi } from "../lib/api";
 
 type ParcelFeature = GeoJSON.Feature<
@@ -82,6 +88,8 @@ type StoryId =
   | "equity"
   | "prices"
   | "vacant_land";
+
+type RentBand = "low" | "mid" | "high";
 
 const emptyCollection: GeoJSON.FeatureCollection = {
   type: "FeatureCollection",
@@ -347,6 +355,7 @@ export default function ScotlandMap() {
   const [coverageLive, setCoverageLive] = useState<CoverageLayer[]>([]);
   const [coverageGaps, setCoverageGaps] = useState<CoverageLayer[]>([]);
   const [coverageOpen, setCoverageOpen] = useState(false);
+  const [band, setBand] = useState<RentBand | null>(null);
 
   const applyResult = useCallback((payload: SquareResponse) => {
     setResult(payload);
@@ -719,6 +728,13 @@ export default function ScotlandMap() {
         setChoropleth("vacant_residual");
         setShowVdl(true);
       }
+      if (params.get("vacant") === "1") setShowVdl(true);
+      if (params.get("public") === "0") setShowPublicLand(false);
+      if (params.get("public") === "1") setShowPublicLand(true);
+      const qBand = params.get("band");
+      if (qBand === "low" || qBand === "mid" || qBand === "high") {
+        setBand(qBand);
+      }
       if (qWords) {
         setQuery(qWords);
         void (async () => {
@@ -811,6 +827,8 @@ export default function ScotlandMap() {
     if (choropleth === "off") {
       map.setLayoutProperty("council-fill", "visibility", "none");
       map.setLayoutProperty("council-line", "visibility", "none");
+      map.setFilter("council-fill", null);
+      map.setFilter("council-line", null);
       setMetricNote(null);
       return;
     }
@@ -819,6 +837,21 @@ export default function ScotlandMap() {
     map.setLayoutProperty("council-line", "visibility", "visible");
     const def = METRICS.find((m) => m.id === choropleth) ?? METRICS[0];
     map.setPaintProperty("council-fill", "fill-color", paintForMetric(def));
+    const rent: FilterSpecification = [
+      "coalesce",
+      ["get", "annual_ground_rent_plot_gbp"],
+      0,
+    ];
+    const bandFilter: FilterSpecification | null =
+      band === "low"
+        ? ["<", rent, 1500]
+        : band === "mid"
+          ? ["all", [">=", rent, 1500], ["<", rent, 4500]]
+          : band === "high"
+            ? [">=", rent, 4500]
+            : null;
+    map.setFilter("council-fill", bandFilter);
+    map.setFilter("council-line", bandFilter);
 
     const meta = metricsMetaRef.current?.[choropleth];
     if (meta?.min != null && meta?.max != null) {
@@ -828,7 +861,19 @@ export default function ScotlandMap() {
     } else {
       setMetricNote(def.label);
     }
-  }, [mapReady, choropleth, layerBusy]);
+  }, [mapReady, choropleth, layerBusy, band]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const url = new URL(window.location.href);
+    if (showVdl) url.searchParams.set("vacant", "1");
+    else url.searchParams.delete("vacant");
+    if (showPublicLand) url.searchParams.set("public", "1");
+    else url.searchParams.set("public", "0");
+    if (band) url.searchParams.set("band", band);
+    else url.searchParams.delete("band");
+    window.history.replaceState({}, "", url.toString());
+  }, [showVdl, showPublicLand, band]);
 
   // W3W cell grid
   useEffect(() => {
@@ -1090,6 +1135,7 @@ export default function ScotlandMap() {
             <h1>Scotland Open Land</h1>
             <nav className="brand-nav">
               <a href="/methodology">About</a>
+              <a href="/downloads">Downloads</a>
               <a href="https://www.slrg.scot" target="_blank" rel="noreferrer">
                 SLRG
               </a>
@@ -1152,6 +1198,8 @@ export default function ScotlandMap() {
           </div>
         )}
 
+        <NationalStats />
+
         <div className="sidebar-scroll">
           <div className="search-block">
             <label className="sr-only" htmlFor="place-query">
@@ -1193,6 +1241,43 @@ export default function ScotlandMap() {
                   </button>
                 ))}
               </div>
+
+              <label className="layer-select-label">Filter</label>
+              <div className="layer-chips">
+                <button
+                  type="button"
+                  className={showVdl ? "chip active" : "chip"}
+                  onClick={() => setShowVdl((v) => !v)}
+                  title="Show SVDLS vacant and derelict sites"
+                >
+                  Vacant
+                </button>
+                <button
+                  type="button"
+                  className={showPublicLand ? "chip active" : "chip"}
+                  onClick={() => setShowPublicLand((v) => !v)}
+                  title="Show five-body public / Crown overlay"
+                >
+                  Public
+                </button>
+                {(["low", "mid", "high"] as RentBand[]).map((id) => (
+                  <button
+                    key={id}
+                    type="button"
+                    className={band === id ? "chip active" : "chip"}
+                    onClick={() => setBand((cur) => (cur === id ? null : id))}
+                    title="Filter councils by plot AGR band (low < £1,500, mid, high ≥ £4,500)"
+                  >
+                    {id} rent
+                  </button>
+                ))}
+              </div>
+              {band && (
+                <p className="layer-meta">
+                  Showing {band} rent-band councils only. Ownership is public or
+                  unknown — never labelled private from this overlay.
+                </p>
+              )}
 
               <label className="layer-select-label" htmlFor="choropleth">
                 Colour map by
@@ -1250,22 +1335,6 @@ export default function ScotlandMap() {
                   title="W3W cells with AGR (zoom 12+)"
                 >
                   Cell grid
-                </button>
-                <button
-                  type="button"
-                  className={showVdl ? "chip active" : "chip"}
-                  onClick={() => setShowVdl((v) => !v)}
-                  title="Scottish vacant and derelict land survey sites (zoom 8+)"
-                >
-                  Vacant land
-                </button>
-                <button
-                  type="button"
-                  className={showPublicLand ? "chip active" : "chip"}
-                  onClick={() => setShowPublicLand((v) => !v)}
-                  title="Scottish Government public and Crown Estate land (zoom 6+)"
-                >
-                  Public land
                 </button>
                 <button
                   type="button"

@@ -186,6 +186,87 @@ input {
   line-height: 1.35;
 }
 
+.national-strip {
+  flex-shrink: 0;
+  padding: 0.55rem 0.85rem;
+  border-bottom: 1px solid #d9e2ec;
+  background: #f7f9fc;
+}
+
+.national-strip-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--slrg-muted);
+  margin-bottom: 0.35rem;
+}
+
+.national-strip-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.35rem;
+}
+
+.national-strip-grid .fd-label {
+  display: block;
+  font-size: 0.68rem;
+  color: var(--slrg-muted);
+}
+
+.national-strip-grid .fd-value {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--slrg-navy);
+}
+
+.national-strip-note {
+  margin: 0.35rem 0 0;
+  font-size: 0.72rem;
+  color: var(--slrg-muted);
+  line-height: 1.35;
+}
+
+.national-strip-note a {
+  color: var(--slrg-navy);
+}
+
+.downloads-page {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 3rem;
+  line-height: 1.5;
+}
+
+.downloads-nav {
+  font-size: 0.85rem;
+  margin: 0 0 1rem;
+}
+
+.downloads-page h1 {
+  font-size: 1.6rem;
+  margin: 0 0 0.5rem;
+}
+
+.downloads-page h2 {
+  font-size: 1.05rem;
+  margin: 1.4rem 0 0.4rem;
+}
+
+.downloads-note {
+  color: var(--slrg-muted);
+  font-size: 0.9rem;
+}
+
+.downloads-page ul {
+  padding-left: 1.1rem;
+}
+
+.downloads-page li {
+  margin: 0.3rem 0;
+}
+
 .fiscal-place {
   background: #f7f9fc;
   border: 1px solid #d9e2ec;

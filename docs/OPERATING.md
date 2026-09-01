@@ -49,6 +49,7 @@ npm run dev
 | Public / Crown | Viewport SG 2024 holdings | Toggle **Public land**; zoom ≥ 6. Five bodies only; not a title |
 | Coverage | Live vs linked/gap | Sidebar **Coverage** list; live rows toggle overlays |
 | Vacant residual story | Council choropleth + overlay | `/?story=vacant_land` |
+| Filters | Vacant / public overlays, rent band | `/?vacant=1&public=1&band=high` |
 | Click | Any cell | Full residual assessment + place card |
 
 Full national 3 m precompute is intentionally not stored (~billions of cells).
