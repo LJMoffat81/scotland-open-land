@@ -10,6 +10,7 @@ from typing import Any
 
 from layers.council_metrics import METRIC_DEFS
 from layers.public_land import query_point as public_land_at_point
+from layers.registers import registers_for_council
 from layers.vdl import query_point as vdl_at_point
 from spatial.parcels import lookup_parcel_geojson
 
@@ -112,9 +113,21 @@ def platform_catalog() -> dict[str, Any]:
                 "source_url": SPATIAL_HUB_LA_OWN,
             },
             {
+                "id": "planning",
+                "group": "spatial",
+                "status": "linked",
+                "label": "Planning applications",
+                "description": (
+                    "Verified official view pages where confirmed; otherwise national "
+                    "ePlanning. No national drawable WMS."
+                ),
+                "endpoint": "/api/registers.json",
+                "source_url": "https://www.eplanning.scot/ePlanningClient/",
+            },
+            {
                 "id": "council_assets",
                 "group": "ownership",
-                "status": "gap",
+                "status": "linked",
                 "label": "Council asset / CAT registers",
                 "description": "Improvement Service amalgamated registers — Spatial Hub login.",
                 "source_url": SPATIAL_HUB_ASSETS,
@@ -123,9 +136,17 @@ def platform_catalog() -> dict[str, Any]:
             {
                 "id": "common_good",
                 "group": "ownership",
-                "status": "gap",
+                "status": "linked",
                 "label": "Common Good registers",
                 "description": "Statutory LA registers; no single open national spatial layer yet.",
+            },
+            {
+                "id": "fife_land_map",
+                "group": "ownership",
+                "status": "linked",
+                "label": "Fife land map",
+                "description": "This council’s ArcGIS hub. Not a national layer.",
+                "source_url": "https://fife.maps.arcgis.com/home/index.html",
             },
             {
                 "id": "sasine_private",
@@ -162,6 +183,8 @@ def place_context(
     *,
     postcode: str | None = None,
     parcel: dict[str, Any] | None = None,
+    council_code: str | None = None,
+    council_name: str | None = None,
 ) -> dict[str, Any]:
     """Who-holds / what-status card for one place, with honest gaps."""
     parcel_feature = parcel if parcel is not None else lookup_parcel_geojson(lat, lng)
@@ -221,6 +244,9 @@ def place_context(
             "status": "gap",
             "note": "Private names and Sasine extents stay on ScotLIS / paid products.",
         },
+        "registers": registers_for_council(council_code),
+        "council_code": council_code,
+        "council_name": council_name,
         "flags": ownership_flags,
         "scotlis": scotlis_links(lat, lng, postcode),
         "filters": {

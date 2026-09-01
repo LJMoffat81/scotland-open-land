@@ -32,6 +32,8 @@ def _square_with_platform(*args, **kwargs):
         square["lat"],
         square["lng"],
         parcel=payload.get("parcel"),
+        council_code=agr.get("council_code"),
+        council_name=agr.get("council_name"),
     )
     context["filters"]["value_band"] = value_band
     context["filters"]["value_band_plot_gbp"] = plot_gbp

@@ -121,6 +121,13 @@ export type PlatformContext = {
   local_authority_holding?: { status?: string; reason?: string };
   common_good?: { status?: string; reason?: string };
   private_or_sasine?: { status?: string; note?: string };
+  registers?: {
+    name?: string | null;
+    planning?: { url?: string | null; label?: string | null; scope?: string };
+    cat?: { url?: string | null; label?: string | null };
+    land_map?: { url?: string | null; note?: string | null } | null;
+    scotlis?: { url?: string | null };
+  } | null;
   scotlis?: {
     public_home?: string;
     search_hint?: string;
@@ -382,6 +389,45 @@ export default function AgrBreakdown({
               </dd>
             </div>
           </dl>
+          {platform.registers && (
+            <p className="place-note">
+              {platform.registers.planning?.url && (
+                <>
+                  <a
+                    href={platform.registers.planning.url}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {platform.registers.planning.scope === "council"
+                      ? "Planning applications"
+                      : "ePlanning Scotland"}
+                  </a>
+                  {" \u00b7 "}
+                </>
+              )}
+              {platform.registers.land_map?.url && (
+                <>
+                  <a
+                    href={platform.registers.land_map.url}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {platform.registers.name || "Council"} land map
+                  </a>
+                  {" \u00b7 "}
+                </>
+              )}
+              {platform.registers.cat?.url && (
+                <a
+                  href={platform.registers.cat.url}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  CAT register
+                </a>
+              )}
+            </p>
+          )}
           <p className="place-note muted">
             Research overlay, not a title sheet. Confirm ownership on ScotLIS.
           </p>

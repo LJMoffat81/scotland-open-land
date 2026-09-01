@@ -16,6 +16,7 @@ from layers.open_stats import (
     vdl_json,
 )
 from layers.platform import place_context, platform_catalog
+from layers.registers import registers_payload
 from layers.public_land import query_bbox as public_land_bbox
 from layers.vdl import query_bbox as vdl_bbox
 
@@ -126,6 +127,7 @@ def api_place(
     lng: float | None = Query(default=None),
 ) -> dict:
     """Place card: vacant / public / parcel / gaps. AGR stays on /square."""
+    result: dict = {}
     if pc:
         import httpx
 
@@ -147,23 +149,27 @@ def api_place(
     if lat is None or lng is None:
         raise HTTPException(status_code=400, detail="Provide pc= or lat= and lng=.")
     _scotland_bounds_check(lat, lng)
-    card = place_context(lat, lng, postcode=pc)
+    council_code = None
+    council_name = None
+    if pc:
+        codes = result.get("codes") if pc else None
+        if isinstance(codes, dict):
+            council_code = codes.get("admin_district")
+        council_name = result.get("admin_district")
+    card = place_context(
+        lat,
+        lng,
+        postcode=pc,
+        council_code=council_code,
+        council_name=council_name,
+    )
     card["postcode"] = pc
     return card
 
 
 @router.get("/api/registers.json")
 def api_registers() -> dict:
-    catalog = platform_catalog()
-    return {
-        "ok": True,
-        "note": (
-            "Official source URLs for live, linked and gap layers. "
-            "Per-council planning pages are not stored as a bulk file here yet."
-        ),
-        "layers": catalog["layers"],
-        "data_policy": catalog["data_policy"],
-    }
+    return registers_payload()
 
 
 @router.get("/downloads")

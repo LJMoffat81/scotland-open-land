@@ -14,7 +14,7 @@ Only layers that can be legally published for free public use are drawn on the m
 | Council extents | Live | ROS open | AGR choropleth |
 | SVDLS vacant & derelict | Live | OGL | Survey polygons; owner class ≠ title. National and per-council hectare rolls |
 | Public / Crown Estate | Live overlay | SG 2024 FeatureServer | Five bodies only, non-exhaustive. Not local-authority land |
-| Planning applications | Linked | Per-council portals | All 32 councils have a verified official view page. No national drawable WMS |
+| Planning applications | Linked | Per-council + ePlanning | 13 of 32 have a verified official view page in `data/config/registers.yaml`. Others use national ePlanning. No national drawable WMS |
 | CAT / council assets | Linked | Per-council pages | Spatial Hub amalgamated register still requires login |
 | Common Good | Linked | Per-council registers | No single open national spatial file |
 | Fife land map | Linked | Fife Council | This council’s own terrier. Not a national layer |
@@ -33,7 +33,7 @@ Only layers that can be legally published for free public use are drawn on the m
 | `/api/vdl.json` | SVDLS by owner class |
 | `/api/vdl-councils.json` | Vacant hectares × illustrative full AGR |
 | `/api/place.json?pc=KY7+5NE` | Place lookup: AGR, parcel, vacant, registers |
-| `/api/registers.json` | Verified official Common Good / CAT / planning / land-map URLs |
+| `/api/registers.json` | National sources plus per-council planning URLs (13 verified; rest national ePlanning) |
 | `/api/catalog.json` | Live / linked / gap register |
 
 ## Vacant and derelict land

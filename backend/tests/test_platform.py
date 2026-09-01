@@ -18,7 +18,8 @@ def test_platform_catalog_has_brief_layers():
     assert statuses["vdl"] == "live"
     assert statuses["public_crown"] == "live"
     assert statuses["la_holdings"] == "gap"
-    assert statuses["common_good"] == "gap"
+    assert statuses["planning"] == "linked"
+    assert statuses["common_good"] == "linked"
     public = next(layer for layer in cat["layers"] if layer["id"] == "public_crown")
     assert public["endpoint"] == "/layers/open/public-land"
 

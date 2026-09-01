@@ -1,0 +1,158 @@
+# Official register landing pages for Scotland Open Land.
+# Only URLs that returned HTTP 200 on an official domain (checked 2026-09-01)
+# are stored as council-specific. Others fall back to national services.
+# Spatial Hub amalgamated CAT / asset / LA-ownership layers still need login
+# or are not open — they stay linked/gap, never scraped.
+
+national:
+  eplanning:
+    url: https://www.eplanning.scot/ePlanningClient/
+    label: ePlanning Scotland
+    note: National application portal. Not a per-council public-access map.
+  tellme_scotland:
+    url: https://www.tellmescotland.gov.uk/home/
+    label: Tell Me Scotland
+    note: National public information notices, including planning adverts.
+  scotlis:
+    url: https://scotlis.ros.gov.uk/
+    label: ScotLIS
+    note: Official title sheets. This platform does not replace ScotLIS.
+  spatial_hub_cat:
+    url: https://data.spatialhub.scot/dataset/community_asset_transfer_register-is
+    label: Spatial Hub CAT register
+    note: Amalgamated dataset page. Download still requires Spatial Hub login.
+  spatial_hub_assets:
+    url: https://data.spatialhub.scot/dataset/council_asset_register-is
+    label: Spatial Hub council asset register
+    note: Amalgamated dataset page. Download still requires Spatial Hub login.
+  spatial_hub_la_own:
+    url: https://data.spatialhub.scot/dataset/land_ownership-is
+    label: Spatial Hub land ownership
+    note: Not an open public layer. Shown as a gap, not ingested.
+
+councils:
+  S12000005:
+    name: Clackmannanshire
+    planning: {scope: national}
+  S12000006:
+    name: Dumfries and Galloway
+    planning:
+      scope: council
+      url: https://www.dumfriesandgalloway.gov.uk/planning-building/planning
+  S12000008:
+    name: East Ayrshire
+    planning:
+      scope: council
+      url: https://www.east-ayrshire.gov.uk/PlanningAndTheEnvironment/Planning-applications/Planning-applications.aspx
+  S12000010:
+    name: East Lothian
+    planning:
+      scope: council
+      url: https://www.eastlothian.gov.uk/planning-environment-and-building-standards
+  S12000011:
+    name: East Renfrewshire
+    planning: {scope: national}
+  S12000013:
+    name: Na h-Eileanan Siar
+    planning:
+      scope: council
+      url: https://www.cne-siar.gov.uk/planning-and-building-standards
+  S12000014:
+    name: Falkirk
+    planning:
+      scope: council
+      url: https://www.falkirk.gov.uk/service/planning-and-building-standards
+  S12000017:
+    name: Highland
+    planning:
+      scope: council
+      url: https://www.highland.gov.uk/planning/view-comment-planning-applications
+  S12000018:
+    name: Inverclyde
+    planning: {scope: national}
+  S12000019:
+    name: Midlothian
+    planning: {scope: national}
+  S12000020:
+    name: Moray
+    planning: {scope: national}
+  S12000021:
+    name: North Ayrshire
+    planning: {scope: national}
+  S12000023:
+    name: Orkney Islands
+    planning: {scope: national}
+  S12000026:
+    name: Scottish Borders
+    planning:
+      scope: council
+      url: https://www.scotborders.gov.uk/planning-applications/viewing-planning-application
+  S12000027:
+    name: Shetland Islands
+    planning:
+      scope: council
+      url: https://www.shetland.gov.uk/planning-building
+  S12000028:
+    name: South Ayrshire
+    planning: {scope: national}
+  S12000029:
+    name: South Lanarkshire
+    planning:
+      scope: council
+      url: https://www.southlanarkshire.gov.uk/info/200145/planning_and_building_standards
+  S12000030:
+    name: Stirling
+    planning: {scope: national}
+  S12000033:
+    name: City of Aberdeen
+    planning:
+      scope: council
+      url: https://publicaccess.aberdeencity.gov.uk/online-applications/
+  S12000034:
+    name: Aberdeenshire
+    planning: {scope: national}
+  S12000035:
+    name: Argyll and Bute
+    planning:
+      scope: council
+      url: https://www.argyll-bute.gov.uk/planning-and-building/planning-applications
+  S12000036:
+    name: City of Edinburgh
+    planning:
+      scope: council
+      url: https://www.edinburgh.gov.uk/planning-applications
+  S12000038:
+    name: Renfrewshire
+    planning: {scope: national}
+  S12000039:
+    name: West Dunbartonshire
+    planning: {scope: national}
+  S12000040:
+    name: West Lothian
+    planning: {scope: national}
+  S12000041:
+    name: Angus
+    planning: {scope: national}
+  S12000042:
+    name: City of Dundee
+    planning: {scope: national}
+  S12000045:
+    name: East Dunbartonshire
+    planning: {scope: national}
+  S12000047:
+    name: Fife
+    planning:
+      scope: council
+      url: https://planning.fife.gov.uk/online/
+    land_map:
+      url: https://fife.maps.arcgis.com/home/index.html
+      note: Fife Council ArcGIS hub. This council only — not a national terrier.
+  S12000048:
+    name: Perth and Kinross
+    planning: {scope: national}
+  S12000049:
+    name: City of Glasgow
+    planning: {scope: national}
+  S12000050:
+    name: North Lanarkshire
+    planning: {scope: national}
