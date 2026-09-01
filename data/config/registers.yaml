@@ -78,7 +78,9 @@ councils:
     planning: {scope: national}
   S12000021:
     name: North Ayrshire
-    planning: {scope: national}
+    planning:
+      scope: council
+      url: https://www.eplanning.north-ayrshire.gov.uk/OnlinePlanning/
   S12000023:
     name: Orkney Islands
     planning: {scope: national}
@@ -102,7 +104,9 @@ councils:
       url: https://www.southlanarkshire.gov.uk/info/200145/planning_and_building_standards
   S12000030:
     name: Stirling
-    planning: {scope: national}
+    planning:
+      scope: council
+      url: https://pabs.stirling.gov.uk/online-applications/
   S12000033:
     name: City of Aberdeen
     planning:
@@ -110,7 +114,9 @@ councils:
       url: https://publicaccess.aberdeencity.gov.uk/online-applications/
   S12000034:
     name: Aberdeenshire
-    planning: {scope: national}
+    planning:
+      scope: council
+      url: https://upa.aberdeenshire.gov.uk/online-applications/
   S12000035:
     name: Argyll and Bute
     planning:
@@ -138,7 +144,9 @@ councils:
     planning: {scope: national}
   S12000045:
     name: East Dunbartonshire
-    planning: {scope: national}
+    planning:
+      scope: council
+      url: https://planning.eastdunbarton.gov.uk/online-applications/
   S12000047:
     name: Fife
     planning:
@@ -149,10 +157,14 @@ councils:
       note: Fife Council ArcGIS hub. This council only — not a national terrier.
   S12000048:
     name: Perth and Kinross
-    planning: {scope: national}
+    planning:
+      scope: council
+      url: https://planningapps.pkc.gov.uk/online-applications/
   S12000049:
     name: City of Glasgow
     planning: {scope: national}
   S12000050:
     name: North Lanarkshire
-    planning: {scope: national}
+    planning:
+      scope: council
+      url: https://eplanning.northlanarkshire.gov.uk/online-applications/

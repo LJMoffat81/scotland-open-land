@@ -107,7 +107,9 @@ export default function MethodologyContent() {
   return (
     <main className="methodology-page">
       <p className="meta" style={{ marginBottom: "0.5rem" }}>
-        <a href="/">← Map</a>
+        <a href="/">Map</a>
+        {" · "}
+        <a href="/downloads">Downloads</a>
       </p>
       <h1>Methodology</h1>
       <p>

@@ -156,6 +156,13 @@ def api_place(
         if isinstance(codes, dict):
             council_code = codes.get("admin_district")
         council_name = result.get("admin_district")
+
+    from agr.service import ValuationService
+
+    breakdown = ValuationService.default().assess_point(lat, lng)
+    if not council_code:
+        council_code = breakdown.council_code
+        council_name = breakdown.council_name
     card = place_context(
         lat,
         lng,
@@ -164,6 +171,14 @@ def api_place(
         council_name=council_name,
     )
     card["postcode"] = pc
+    card["agr"] = {
+        "council_code": breakdown.council_code,
+        "council_name": breakdown.council_name,
+        "plot_gbp": breakdown.roll_annual_rent_notional_plot_gbp,
+        "per_sqm_gbp": round(float(breakdown.site_rental_per_sqm_gbp), 4),
+        "method": breakdown.method,
+        "disclaimer": "Research estimate, not a rates bill.",
+    }
     return card
 
 
